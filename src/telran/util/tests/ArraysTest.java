@@ -52,13 +52,21 @@ public class ArraysTest {
 	}
 	
 	@Test
-	void bubbleSortTest() {
+	void bubbleSortTest1() {
+		//test OOP
 		Integer [] array = {10, 5, -5, 100, 200};
 		Integer [] expected = {10, 100, 200, 5, -5};
 		
-		
 		bubbleSort(array, new EvenOddComparator());
-		System.out.println(Arrays.toString(array));
+		assertArrayEquals(expected, array);
+	}
+	
+	void bubbleSortTest2() {
+		//test func interface
+		Integer [] array = {10, 5, -5, 100, 200};
+		Integer [] expected = {10, 100, 200, 5, -5};
+		
+		bubbleSort(array, comparFunc);
 		assertArrayEquals(expected, array);
 	}
 

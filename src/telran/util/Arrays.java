@@ -5,7 +5,7 @@ import java.util.Comparator;
 
 public class Arrays {
 	
-	//Comparator<Integer> compar = (o1, o2) -> {
+	public static Comparator<Integer> comparFunc = (o1, o2) -> {
 		int res;
 	
 		if (isEven(o1) && isEven(o2)) {
@@ -44,7 +44,6 @@ public class Arrays {
 		boolean flSorted = false;
 		int length = array.length;
 		
-	
 		do {
 			flSorted = true;
 			length--;
@@ -54,17 +53,13 @@ public class Arrays {
 					flSorted = false;
 					swap(array, i, i + 1);
 				}
-			}
-			
+			}	
 		} while (!flSorted);
 	}
 
-	
-	
 	private static <T> void swap(T[] array, int i, int j) {
 		T tmp = array[i];
 		array[i] = array[j];
 		array[j] = tmp;
 	}
-	
 }

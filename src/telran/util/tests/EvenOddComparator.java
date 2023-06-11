@@ -17,13 +17,7 @@ public class EvenOddComparator implements Comparator<Integer> {
 			}
 		}
 		
-		
-
 		private boolean isEven(Integer num) {
 			return num % 2 == 0;
 		}
-
-
-
-
 }
