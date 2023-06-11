@@ -29,6 +29,7 @@ public class ArraysTest {
 		assertArrayEquals(expectedLast, insertObject(numbers, 5, 50));
 		assertArrayEquals(expectedFirst, insertObject(numbers, 0, 50));
 		assertArrayEquals(expectedMiddle, insertObject(numbers, 2, 50));
+		
 	}
 
 }
