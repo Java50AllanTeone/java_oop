@@ -8,13 +8,11 @@ public class EvenOddComparator implements Comparator<Integer> {
 		public int compare(Integer o1, Integer o2) {
 			if (isEven(o1) && isEven(o2)) {
 				return o1 - o2;
-			} else if (!isEven(o1) && !isEven(o2)) {
-				return o2 - o1;
-			} else if (isEven(o1)) {
-				return -1;
-			} else {
-				return 1;
 			}
+			if (!isEven(o1) && !isEven(o2)) {
+				return o2 - o1;
+			}
+			return isEven(o1) ? -1 : 1; 
 		}
 		
 		private boolean isEven(Integer num) {
