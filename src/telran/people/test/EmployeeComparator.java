@@ -19,7 +19,7 @@ public class EmployeeComparator implements Comparator<Employee> {
 		case "age" : return e2.getBirthYear() - e1.getBirthYear();
 		case "salary" : return e1.getSalary() - e2.getSalary();
 		case "id" : return e1.getId() - e2.getId();
-		default: throw new Error();
+		default: throw new RuntimeException();
 		}
 	}
 	

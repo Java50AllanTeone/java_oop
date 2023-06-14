@@ -36,7 +36,7 @@ public class EmployeePredicate implements Predicate<Employee> {
 		case "salary" : return e.getSalary() >= this.from && e.getSalary() <= this.to;
 		case "department" : return e.getDepartment().equals(department);
 		case "id" : return e.getId() == from;
-		default: throw new Error();
+		default: throw new RuntimeException();
 		}
 	}
 }
