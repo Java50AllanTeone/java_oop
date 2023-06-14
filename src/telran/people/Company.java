@@ -4,9 +4,17 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
-import telran.points.Point;
+import telran.people.test.EmployeeComparator;
+import telran.people.test.EmployeePredicate;
 
 public class Company {
+//	Predicate<Employee> predYear = e -> e.getBirthYear() <= yearTo && e.getBirthYear() >= yearFrom;
+//	Predicate<Employee> predSalary = e -> e.getSalary() <= salaryTo && e.getBirthYear() >= salaryFrom;
+//	Predicate<Employee> predDepartment = e -> e.getDepartment().equals(department);
+//	Predicate<Employee> predId = e -> e.getId() == empl.getId();
+//	Comparator<Employee> compAge = (e1, e2) -> e2.getBirthYear() - e1.getBirthYear();
+//	Comparator<Employee> compSalary = (e1, e2) -> e1.getSalary() - e2.getSalary();
+//	Comparator<Employee> compId = (e1, e2) -> e1.getId() - e2.getId();
 
 	private Employee[] employees;
 
@@ -21,58 +29,34 @@ public class Company {
 	}
 	
 	public Employee[] getAllEmployeesByAge(int yearFrom, int yearTo) {
-		Predicate<Employee> predYear = e -> e.getBirthYear() <= yearTo && e.getBirthYear() >= yearFrom;
-		Comparator<Employee> compAge = (e1, e2) -> e2.getBirthYear() - e1.getBirthYear();
+		var predYear = new EmployeePredicate(yearFrom, yearTo, "year");
+		var compAge = new EmployeeComparator("age");
 		
-		Employee[] res = new Employee[employees.length];
-		int index = 0;
-		
-		for (int i = 0; i < employees.length; i++) {
-			if (predYear.test(employees[i])) {
-				res[index++] = employees[i];
-			}
-		}
-		res = Arrays.copyOf(res, index);
+		Employee[] res = getFilteredArray(employees, predYear);
 		Arrays.sort(res, compAge);
 		return res;
 	}
 	
 	public Employee[] getEmployeesBySalary(int salaryFrom, int salaryTo) {
-		Predicate<Employee> predSalary = e -> e.getBirthYear() <= salaryTo && e.getBirthYear() >= salaryFrom;
-		Comparator<Employee> compSalary = (e1, e2) -> e1.getSalary() - e2.getSalary();
-		
-		Employee[] res = new Employee[employees.length];
-		int index = 0;
-		
-		for (int i = 0; i < employees.length; i++) {
-			if (predSalary.test(employees[i])) {
-				res[index++] = employees[i];
-			}
-		}
-		res = Arrays.copyOf(res, index);
+		var predSalary = new EmployeePredicate(salaryFrom, salaryTo, "salary");
+		var compSalary = new EmployeeComparator("salary");
+
+		Employee[] res = getFilteredArray(employees, predSalary);
 		Arrays.sort(res, compSalary);
 		return res;
 	}
 	
 	public Employee[] getEmployeesByDepartment(String department) {
-		Predicate<Employee> predDepartment = e -> e.getDepartment().equals(department);
-		Comparator<Employee> compId = (e1, e2) -> e1.getId() - e2.getId();
-		
-		Employee[] res = new Employee[employees.length];
-		int index = 0;
-		
-		for (int i = 0; i < employees.length; i++) {
-			if (predDepartment.test(employees[i])) {
-				res[index++] = employees[i];
-			}
-		}
-		res = Arrays.copyOf(res, index);
+		var predDepartment = new EmployeePredicate(department, "department");
+		var compId = new EmployeeComparator("id");
+
+		Employee[] res = getFilteredArray(employees, predDepartment);
 		Arrays.sort(res, compId);
 		return res;
 	}
 	
 	public boolean addEmployee(Employee empl) {
-		Predicate<Employee> predId = e -> e.getId() == empl.getId();
+		var predId = new EmployeePredicate(empl.getId(), "id");
 	
 		for (int i = 0; i < employees.length; i++) {
 			if (predId.test(employees[i])) {
@@ -85,6 +69,10 @@ public class Company {
 	}
 	
 	public boolean removeEmployeesIf(Predicate<Employee> predicate) {
+//		Predicate<Employee> predInverted = e -> !predicate.test(e);
+//		int prevSize = employees.length;
+//		employees = getFilteredArray(employees, predInverted);
+		
 		int prevSize = employees.length;
 		Employee[] tmp = new Employee[prevSize];
 		int index = 0;
@@ -99,7 +87,7 @@ public class Company {
 	}
 	
 	public Employee getEmployee(int id) {
-		Predicate<Employee> predId = e -> e.getId() == id;
+		var predId = new EmployeePredicate(id, "id");
 		Employee res = null;
 		
 		for (Employee empl : employees) {
@@ -111,7 +99,17 @@ public class Company {
 	}
 	
 	
-	
+	public <T> T[] getFilteredArray(T[] src, Predicate<T> predicate) {
+		T[] res = Arrays.copyOf(src, src.length);
+		int index = 0;
+		
+		for (int i = 0; i < src.length; i++) {
+			if (predicate.test(src[i])) {
+				res[index++] = src[i];
+			}
+		}
+		return Arrays.copyOf(res, index);
+	}
 	
 	
 	
