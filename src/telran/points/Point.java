@@ -19,34 +19,33 @@ public class Point implements Comparable<Point> {
 		return Double.compare(length1, length2);
 	}
 	
+	private double getLengthBetween(Point start) {
+		
+		return Math.hypot(this.x - start.x, this.y - start.y);
+	}
+	
 	@Override
 	public String toString() {
 		return "[x=" + x + ", y=" + y + "]";
 	}
 	
-	
-
-	@Override
-	public int hashCode() {
-		return Objects.hash(x, y);
-	}
 
 	@Override
 	public boolean equals(Object obj) {
-		if (this == obj)
-			return true;
-		if (obj == null)
-			return false;
-		if (getClass() != obj.getClass())
-			return false;
 		Point other = (Point) obj;
-		return x == other.x && y == other.y;
+		return this.x == other.x && this.y == other.y;
 	}
 
-	private double getLengthBetween(Point start) {
-		
-		return Math.hypot(this.x - start.x, this.y - start.y);
+	public int getX() {
+		return x;
 	}
+
+	public int getY() {
+		return y;
+	}
+	
+	
+
 	
 
 }
