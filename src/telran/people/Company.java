@@ -28,6 +28,12 @@ public class Company {
 		return res;
 	}
 	
+	public Employee[] getAllEmployees() {
+		Employee [] res = Arrays.copyOf(employees, employees.length);
+		Arrays.sort(res);
+		return res;
+	}
+	
 	public Employee[] getAllEmployeesByAge(int yearFrom, int yearTo) {
 		var predYear = new EmployeePredicate(yearFrom, yearTo, "year");
 		var compAge = new EmployeeComparator("age");
