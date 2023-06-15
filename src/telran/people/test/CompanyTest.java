@@ -68,6 +68,7 @@ class CompanyTest {
 		
 		Employee[] expected3 = new Employee[] {
 				new Employee(20, 30_000, 1970, "Ned", "Hand"),
+				new Employee(40, 50_000, 1965, "Robert", "King"),
 				new Employee(1, 10_000, 1950, "Barristan", "Knight")		
 		};
 		assertArrayEquals(expected3, company.getAllEmployeesByAge(1950, 1970));
@@ -131,5 +132,42 @@ class CompanyTest {
 		};
 		assertArrayEquals(expected, company.getAllEmployees(new EmployeeComparator("id")));
 	}
+	
+	@Test
+	void removeEmployeesIfTest() {
+		company = new Company(new Employee[]{
+				new Employee(1, 10_000, 1950, "Barristan", "Knight"),
+				new Employee(15, 2_000, 1990, "John", "Watcher"),
+				new Employee(20, 30_000, 1970, "Ned", "Knight"),
+				new Employee(40, 50_000, 1965, "Robert", "King")	
+		});
+		
+		Employee[] expected = new Employee[]{
+				new Employee(1, 10_000, 1950, "Barristan", "Knight"),
+				new Employee(15, 2_000, 1990, "John", "Watcher"),
+				new Employee(20, 30_000, 1970, "Ned", "Knight"),
+				new Employee(40, 50_000, 1965, "Robert", "King")	
+		};
+		assertFalse(company.removeEmployeesIf(new EmployeePredicate("Prince", "department")));
+		assertArrayEquals(expected, company.getAllEmployees());
+		
+		Employee[] expected1 = new Employee[] {
+				new Employee(15, 2_000, 1990, "John", "Watcher"),
+				new Employee(40, 50_000, 1965, "Robert", "King")
+		};
+		assertTrue(company.removeEmployeesIf(new EmployeePredicate("Knight", "department")));
+		assertArrayEquals(expected1, company.getAllEmployees());
+	}
+	
+	
+	@Test
+	void getEmployeeTest() {
+		assertNull(company.getEmployee(10));
+		assertNotNull(company.getEmployee(1));
+		
+		assertEquals(new Employee(1, 10_000, 1950, "Barristan", "Knight"), company.getEmployee(1));
+	}
+	
+	
 
 }
