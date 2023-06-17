@@ -169,6 +169,8 @@ public class Company {
 		return middle;
 	}
 	
+	
+	//to fix
 	public static int binarySearchLast(Employee[] array, Comparator<Employee> comp, Employee empl) {
 		int left = 0;
 		int right = array.length - 1;
