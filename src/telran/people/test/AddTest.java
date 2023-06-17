@@ -38,15 +38,11 @@ class AddTest {
 		//System.out.println(Arrays.toString(cmp.employeesId));
 		//System.out.println(Arrays.toString(cmp.employeesSalary));
 		System.out.println(Arrays.toString(cmp.employeesAge));
-		//System.out.println(Arrays.toString(cmp.employeesName));
-		//System.out.println(Arrays.toString(cmp.employeesDepartment));
+
+		System.out.println(Arrays.toString(cmp.getAllEmployeesByAge(1990, 2000)));
 		
-		//System.out.println(Arrays.toString(cmp.getAllEmployeesByAge(2000, 2000)));
+	
 		
-		var a = cmp.binarySearchFirst(cmp.employeesAge, (e1, e2) -> e1.getBirthYear() - e2.getBirthYear(), new Employee(3000, 22_000, 1988, "Allan", "Developer"));
-		System.out.println(a);
-		var b = cmp.binarySearchFirst(cmp.employeesAge, (e1, e2) -> e1.getBirthYear() - e2.getBirthYear(), new Employee(3000, 22_000, 1988, "Allan", "Developer"));
-		System.out.println(b);
 
 	}
 

@@ -34,7 +34,7 @@ public class Company {
 	}
 	
 	public Employee[] getAllEmployeesByAge(int yearFrom, int yearTo) {
-		Employee[] res = getFilteredArray(employees, e -> e.getBirthYear() <= yearTo && e.getBirthYear() >= yearFrom);
+		//Employee[] res = getFilteredArray(employees, e -> e.getBirthYear() <= yearTo && e.getBirthYear() >= yearFrom);
 		//Arrays.sort(res, (e1, e2) -> e2.getBirthYear() - e1.getBirthYear());
 		
 		
@@ -123,9 +123,11 @@ public class Company {
 		int fr = binarySearchFirst(src, comp, new Employee(0, 0, from, "", ""));
 		int t = binarySearchLast(src, comp, new Employee(0, 0, to, "", ""));
 		System.out.println(fr);
+		
+		
 		System.out.println(t);
 		
-		return Arrays.copyOfRange(src, fr, to);
+		return Arrays.copyOfRange(src, 0, 4);
 		
 	}
 	
@@ -144,54 +146,50 @@ public class Company {
 	
 	
 	
-	public static int binarySearchFirst(Employee[] array, Comparator<Employee> comp, Employee empl) {
+	public static int binarySearchFirst(Employee[] array, Comparator<Employee> comp, Employee target) {
 		int left = 0;
 		int right = array.length - 1;
 		int middle = right / 2;
 		
 		while(left < right) {
-			if (comp.compare(empl, array[middle]) > 0) {
-				System.out.println(empl);
+			if (comp.compare(target, array[middle]) > 0) {
+				System.out.println(target);
 				System.out.println(array[middle]);
-				System.out.println(comp.compare(empl, array[middle]));
+				System.out.println(comp.compare(target, array[middle]));
 				right = middle - 1;
-			} else if (comp.compare(empl, array[middle]) < 0) {
+			} else if (comp.compare(target, array[middle]) < 0) {
 				left = middle + 1;
 			} else {
 				right = middle;
 			}
 			middle = (left + right) / 2;
 		}
-		
-		if (comp.compare(empl, array[middle]) != 0)
-			middle = comp.compare(empl, array[middle]) > 0 ? -(middle + 2) : -(middle + 1);
+		if (comp.compare(target, array[middle]) != 0)
+			middle = comp.compare(target, array[middle]) > 0 ? -(middle + 2) : -(middle + 1);
 		
 		return middle;
 	}
 	
 	
-	//to fix
-	public static int binarySearchLast(Employee[] array, Comparator<Employee> comp, Employee empl) {
+	public int binarySearchLast(Employee[] nums, Comparator<Employee> comp, Employee target) {
 		int left = 0;
-		int right = array.length - 1;
-		int middle = right / 2;
-		
-		while(left < right) {
-			if (comp.compare(empl, array[middle]) > 0) {
-				right = middle - 1;
-			} else if (comp.compare(empl, array[middle]) < 0) {
-				left = middle + 1;
+		int right = nums.length - 1;
+		int result = -1;
+
+		while (left <= right) {
+			int mid = left + (right - left) / 2;
+
+			if (nums[mid].compareTo(target) <= 0) {
+				left = mid + 1;
+				if (nums[mid].compareTo(target) == 0) {
+					result = mid;
+				}
 			} else {
-				left = middle;
+				right = mid - 1;
 			}
-			middle = (left + right) / 2;
 		}
-		
-		if (comp.compare(empl, array[middle]) != 0)
-			middle = comp.compare(empl, array[middle]) > 0 ? -(middle + 2) : -(middle + 1);
-		
-		return middle;
-	}
+		return result >= 0 ? result : left;
+    }
 	
 	
 	
