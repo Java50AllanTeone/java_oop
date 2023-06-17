@@ -13,8 +13,8 @@ public class Calculator {
 
 	
 	public static double calculate(CalcData cd) {
-		DoubleBinaryOperator operation = operators[operations.indexOf(cd.getOperation())];
-		return operation.apply(cd.getOp1(), cd.getOp2());
+		DoubleBinaryOperator operator = operators[operations.indexOf(cd.getOperation())];
+		return operator.apply(cd.getOp1(), cd.getOp2());
 	}
 
 }
