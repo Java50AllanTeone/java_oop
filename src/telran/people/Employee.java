@@ -57,4 +57,12 @@ public class Employee implements Comparable<Employee> {
 		return this.getId() - empl.getId();
 	}
 
+	@Override
+	public String toString() {
+		return "Employee [id=" + id + ", salary=" + salary + ", birthYear=" + birthYear + ", name=" + name
+				+ ", department=" + department + "]\n";
+	}
+	
+	
+
 }
