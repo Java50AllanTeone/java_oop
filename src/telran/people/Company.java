@@ -30,13 +30,11 @@ public class Company {
 	}
 	
 	public Employee[] getAllEmployeesByAge(int yearFrom, int yearTo) {
-		//return getFilteredArray(employeesAge, e -> e.getBirthYear() >= yearFrom && e.getBirthYear() <= yearTo);
-		return getFilteredArray(employeesAge, yearFrom, yearTo);
+		return getFilteredArray(employeesAge, e -> e.getBirthYear() >= yearFrom && e.getBirthYear() <= yearTo);
 	}
 	
 	public Employee[] getEmployeesBySalary(int salaryFrom, int salaryTo) {
-		//return getFilteredArray(employeesSalary, e -> e.getSalary() <= salaryTo && e.getSalary() >= salaryFrom);
-		return getFilteredArray(employeesAge, salaryFrom, salaryTo)
+		return getFilteredArray(employeesSalary, e -> e.getSalary() <= salaryTo && e.getSalary() >= salaryFrom);
 	}
 	
 	public Employee[] getEmployeesByDepartment(String department) {
@@ -101,15 +99,6 @@ public class Company {
 			}
 		}
 		return Arrays.copyOf(employeesAge, index);
-	}
-	
-	public Employee[] getFilteredArray(Employee[] src, int from, int to) {
-
-		int start = getFirst(employeesAge, new Employee(0, 0, from, "", ""), (e1, e2) -> e1.getBirthYear() - e2.getBirthYear());
-		int end = getLast(employeesAge, new Employee(0, 0, to, "", ""), (e1, e2) -> e1.getBirthYear() - e2.getBirthYear());
-		System.out.println(start);
-		System.out.println(end);
-		return Arrays.copyOfRange(employeesAge, start, end + 1);
 	}
 	
 	private int getValidIndex(int index) {

@@ -20,30 +20,6 @@ class AddTest {
 				new Employee(1, 1_000, 2000, "Shira", "HR"),
 				new Employee(100, 100_000, 1992, "Xi", "Prog")
 		});
-		/*
-		System.out.println("Init");
-		System.out.println(Arrays.toString(cmp.employeesId));
-		System.out.println(Arrays.toString(cmp.employeesSalary));
-		System.out.println(Arrays.toString(cmp.employeesAge));
-		System.out.println(Arrays.toString(cmp.employeesName));
-		System.out.println(Arrays.toString(cmp.employeesDepartment));*/
-		
-		cmp.addEmployee(new Employee(22, 22_000, 1988, "Allan", "Developer"));
-		cmp.addEmployee(new Employee(22, 22_000, 1988, "Allan1", "Developer"));
-		cmp.addEmployee(new Employee(23, 22_000, 1988, "Allan1", "Developer"));
-		cmp.addEmployee(new Employee(0, 22_000, 1988, "Allan2", "Developer"));
-		cmp.addEmployee(new Employee(23, 22_000, 1988, "Allan1", "Developer"));
-		
-		System.out.println("After adding");
-		//System.out.println(Arrays.toString(cmp.employeesId));
-		//System.out.println(Arrays.toString(cmp.employeesSalary));
-		System.out.println(Arrays.toString(cmp.employeesAge));
-
-//		System.out.println(Arrays.toString(cmp.getAllEmployeesByAge(1977, 1990)));
-//		System.out.println(cmp.getEmployee(22));
-
-		
-		System.out.println(Arrays.toString(cmp.getFilteredArray(cmp.employeesAge, 1992, 1992)));
 		
 	
 		
