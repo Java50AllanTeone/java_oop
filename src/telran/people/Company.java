@@ -115,29 +115,4 @@ public class Company {
 	}
 	
 	
-	public int getFirst(Employee[] arr, Employee target, Comparator<Employee> comp) {
-		int index = Arrays.binarySearch(arr, target, comp);
-		
-		while (arr[index].getBirthYear() == target.getBirthYear()) {
-			index--;
-		}
-		return ++index;
-	}
-	
-	public int getLast(Employee[] arr, Employee target, Comparator<Employee> comp) {
-		int index = Arrays.binarySearch(arr, target, comp);
-		
-		while (arr[index].getBirthYear() == target.getBirthYear()) {
-			index++;
-		}
-		return --index;
-	}
-	
-
-	
-	
-	
-	
-	
-
 }
