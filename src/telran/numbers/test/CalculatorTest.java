@@ -11,35 +11,42 @@ import telran.numbers.Calculator;
 
 class CalculatorTest {
 
-	@Test
-	void test() {
-		BinaryOperator<Double> bo = (a, b) -> a + b;
-		assertEquals(30, bo.apply(10.0, 20.0));
-		
-		DoubleBinaryOperator[] operators = {
-				(a, b) -> a + b,
-				(a, b) -> a - b,
-				(a, b) -> a * b,
-				(a, b) -> a / b,
-		};	
-
-		Double[] results = {30.0, 10.0, 200.0, 2.0};
-		double op1 = 20;
-		double op2 = 10;
-
-		for (int i = 0; i < operators.length; i++) {
-			assertEquals(results[i], operators[i].apply(op1, op2));
-		}
-			
-	}
 	
 	@Test
 	void calculateTest() {
 		assertEquals(20, Calculator.calculate(new CalcData(40, 20, '-')));
+		assertEquals(40, Calculator.calculate(new CalcData(40, 0, '-')));
+		assertEquals(-40, Calculator.calculate(new CalcData(0, 40, '-')));
+		assertEquals(0, Calculator.calculate(new CalcData(0, 0, '-')));
+		assertEquals(0, Calculator.calculate(new CalcData(40, 40, '-')));
+		assertEquals(-20, Calculator.calculate(new CalcData(20, 40, '-')));
+		
+		assertEquals(60, Calculator.calculate(new CalcData(40, 20, '+')));
+		assertEquals(60, Calculator.calculate(new CalcData(20, 40, '+')));
+		assertEquals(0, Calculator.calculate(new CalcData(0, 0, '+')));
+		assertEquals(20, Calculator.calculate(new CalcData(0, 20, '+')));
+		assertEquals(20, Calculator.calculate(new CalcData(20, 0, '+')));
+		assertEquals(0, Calculator.calculate(new CalcData(-20, 20, '+')));
+		assertEquals(-40, Calculator.calculate(new CalcData(-20, -20, '+')));
+		
+		assertEquals(800, Calculator.calculate(new CalcData(40, 20, '*')));
+		assertEquals(800, Calculator.calculate(new CalcData(20, 40, '*')));
+		assertEquals(1, Calculator.calculate(new CalcData(1, 1, '*')));
+		assertEquals(20, Calculator.calculate(new CalcData(20, 1, '*')));
+		assertEquals(20, Calculator.calculate(new CalcData(1, 20, '*')));
+		assertEquals(-800, Calculator.calculate(new CalcData(-40, 20, '*')));
+		assertEquals(800, Calculator.calculate(new CalcData(-40, -20, '*')));
+		assertEquals(-800, Calculator.calculate(new CalcData(40, -20, '*')));
+		
+		assertEquals(2, Calculator.calculate(new CalcData(40, 20, '/')));
+		assertEquals(0.5, Calculator.calculate(new CalcData(20, 40, '/')));
+		assertEquals(40, Calculator.calculate(new CalcData(40, 1, '/')));
+		assertEquals(1, Calculator.calculate(new CalcData(1, 1, '/')));
+		assertEquals(-2, Calculator.calculate(new CalcData(40, -20, '/')));
+		assertEquals(-2, Calculator.calculate(new CalcData(-40, 20, '/')));
+		assertEquals(2, Calculator.calculate(new CalcData(-40, -20, '/')));
+
 	}
 }
 
 
-interface DoubleBinaryOperator extends BinaryOperator<Double> {
-	
-}
