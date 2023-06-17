@@ -30,11 +30,13 @@ public class Company {
 	}
 	
 	public Employee[] getAllEmployeesByAge(int yearFrom, int yearTo) {
-		return getFilteredArray(employeesAge, e -> e.getBirthYear() >= yearFrom && e.getBirthYear() <= yearTo);
+		//return getFilteredArray(employeesAge, e -> e.getBirthYear() >= yearFrom && e.getBirthYear() <= yearTo);
+		return getFilteredArray(employeesAge, yearFrom, yearTo);
 	}
 	
 	public Employee[] getEmployeesBySalary(int salaryFrom, int salaryTo) {
-		return getFilteredArray(employeesSalary, e -> e.getSalary() <= salaryTo && e.getSalary() >= salaryFrom);
+		//return getFilteredArray(employeesSalary, e -> e.getSalary() <= salaryTo && e.getSalary() >= salaryFrom);
+		return getFilteredArray(employeesAge, salaryFrom, salaryTo)
 	}
 	
 	public Employee[] getEmployeesByDepartment(String department) {
@@ -98,20 +100,17 @@ public class Company {
 				res[index++] = src[i];
 			}
 		}
-		return Arrays.copyOf(res, index);
+		return Arrays.copyOf(employeesAge, index);
 	}
 	
-	/*private Employee[] getFilteredArray(Employee[] src, Comparator<Employee> comp, int from, int to) {
-		int startPoint = binarySearchFirst(src, comp, new Employee(0, 0, from, "", ""));
-		int endPoint = binarySearchLast(src, comp, new Employee(0, 0, to, "", ""));
-		endPoint = getValidIndex(endPoint);
-		startPoint = getValidIndex(startPoint);
-		
-		System.out.println(startPoint);
-		System.out.println(endPoint);
+	public Employee[] getFilteredArray(Employee[] src, int from, int to) {
 
-		return Arrays.copyOfRange(src, startPoint, endPoint + 1);
-	}*/
+		int start = getFirst(employeesAge, new Employee(0, 0, from, "", ""), (e1, e2) -> e1.getBirthYear() - e2.getBirthYear());
+		int end = getLast(employeesAge, new Employee(0, 0, to, "", ""), (e1, e2) -> e1.getBirthYear() - e2.getBirthYear());
+		System.out.println(start);
+		System.out.println(end);
+		return Arrays.copyOfRange(employeesAge, start, end + 1);
+	}
 	
 	private int getValidIndex(int index) {
 		return index < 0 ? Math.abs(index) - 1 : index;
@@ -134,7 +133,15 @@ public class Company {
 			index--;
 		}
 		return ++index;
+	}
+	
+	public int getLast(Employee[] arr, Employee target, Comparator<Employee> comp) {
+		int index = Arrays.binarySearch(arr, target, comp);
 		
+		while (arr[index].getBirthYear() == target.getBirthYear()) {
+			index++;
+		}
+		return --index;
 	}
 	
 

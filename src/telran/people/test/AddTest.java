@@ -41,9 +41,9 @@ class AddTest {
 
 //		System.out.println(Arrays.toString(cmp.getAllEmployeesByAge(1977, 1990)));
 //		System.out.println(cmp.getEmployee(22));
+
 		
-		var a = cmp.getFirst(cmp.employeesAge, new Employee(0, 0, 1995, "", ""), (e1, e2) -> e1.getBirthYear() - e2.getBirthYear());
-		System.out.println(a);
+		System.out.println(Arrays.toString(cmp.getFilteredArray(cmp.employeesAge, 1992, 1992)));
 		
 	
 		
