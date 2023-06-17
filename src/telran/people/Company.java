@@ -4,9 +4,7 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.function.Predicate;
 
-public class Company {
-	private Employee[] employees;
-	
+public class Company {	
 	public Employee[] employeesId;
 	public Employee[] employeesSalary;
 	public Employee[] employeesAge;
@@ -14,8 +12,6 @@ public class Company {
 	public Employee[] employeesDepartment;
 
 	public Company(Employee[] employees) {
-		this.employees = Arrays.copyOf(employees, employees.length);
-		
 		this.employeesId = Arrays.copyOf(employees, employees.length);
 		this.employeesSalary = Arrays.copyOf(employees, employees.length);
 		this.employeesAge = Arrays.copyOf(employees, employees.length);
@@ -24,7 +20,7 @@ public class Company {
 		
 		Arrays.sort(employeesId, (e1, e2) -> e1.getId() - e2.getId());
 		Arrays.sort(employeesSalary, (e1, e2) -> e1.getSalary() - e2.getSalary());
-		Arrays.sort(employeesAge, (e1, e2) -> e2.getBirthYear() - e1.getBirthYear());
+		Arrays.sort(employeesAge, (e1, e2) -> e1.getBirthYear() - e2.getBirthYear());
 		Arrays.sort(employeesName, (e1, e2) -> e1.getName().compareTo(e2.getName()));
 		Arrays.sort(employeesDepartment, (e1, e2) -> e1.getDepartment().compareTo(e2.getDepartment()));
 	}
@@ -34,27 +30,15 @@ public class Company {
 	}
 	
 	public Employee[] getAllEmployeesByAge(int yearFrom, int yearTo) {
-		//Employee[] res = getFilteredArray(employees, e -> e.getBirthYear() <= yearTo && e.getBirthYear() >= yearFrom);
-		//Arrays.sort(res, (e1, e2) -> e2.getBirthYear() - e1.getBirthYear());
-		
-		
-		
-		return getFilteredArray(employeesAge, (e1, e2) -> e1.getBirthYear() - e2.getBirthYear(), yearFrom, yearTo);
-		
-		
-		//return res;
+		return getFilteredArray(employeesAge, e -> e.getBirthYear() >= yearFrom && e.getBirthYear() <= yearTo);
 	}
 	
 	public Employee[] getEmployeesBySalary(int salaryFrom, int salaryTo) {
-		Employee[] res = getFilteredArray(employees, e -> e.getSalary() <= salaryTo && e.getSalary() >= salaryFrom);
-		Arrays.sort(res, (e1, e2) -> e1.getSalary() - e2.getSalary());
-		return res;
+		return getFilteredArray(employeesSalary, e -> e.getSalary() <= salaryTo && e.getSalary() >= salaryFrom);
 	}
 	
 	public Employee[] getEmployeesByDepartment(String department) {
-		Employee[] res = getFilteredArray(employees, e -> e.getDepartment().equals(department));
-		Arrays.sort(res, (e1, e2) -> e1.getId() - e2.getId());
-		return res;
+		return getFilteredArray(employeesDepartment, e -> e.getDepartment().equals(department));
 	}
 	
 	public boolean addEmployee(Employee empl) {
@@ -62,7 +46,7 @@ public class Company {
 
 		var indId = Arrays.binarySearch(employeesId, empl, (e1, e2) -> e1.getId() - e2.getId());
 		var indSalary = Arrays.binarySearch(employeesSalary, empl, (e1, e2) -> e1.getSalary() - e2.getSalary());
-		var indAge = Arrays.binarySearch(employeesAge, empl, (e1, e2) -> e2.getBirthYear() - e1.getBirthYear());
+		var indAge = Arrays.binarySearch(employeesAge, empl, (e1, e2) -> e1.getBirthYear() - e2.getBirthYear());
 		var indName = Arrays.binarySearch(employeesName, empl, (e1, e2) -> e1.getName().compareTo(e2.getName()));
 		var indDepartment = Arrays.binarySearch(employeesDepartment, empl, (e1, e2) -> e1.getDepartment().compareTo(e2.getDepartment()));
 		
@@ -86,26 +70,24 @@ public class Company {
 	}
 
 
-	
 	public boolean removeEmployeesIf(Predicate<Employee> predicate) {
 		predicate = predicate.negate();
-		int prevSize = employees.length;
-		employees = getFilteredArray(employees, predicate);
+		int prevSize = employeesId.length;
+		
+		employeesId = getFilteredArray(employeesId, predicate);
+		employeesSalary = getFilteredArray(employeesSalary, predicate);
+		employeesAge = getFilteredArray(employeesAge, predicate);
+		employeesName = getFilteredArray(employeesName, predicate);
+		employeesDepartment = getFilteredArray(employeesDepartment, predicate);
 	
-		return prevSize > employees.length;
+		return prevSize > employeesId.length;
 	}
 	
 	public Employee getEmployee(int id) {
-		Predicate<Employee> pred = e -> e.getId() == id;
-		Employee res = null;
-		
-		for (Employee empl : employees) {
-			if (pred.test(empl)) {
-				res = empl;
-			}
-		}
-		return res;
+		return getFilteredArray(employeesId, e -> e.getId() == id)[0];
 	}
+	
+	
 	
 	private Employee[] getFilteredArray(Employee[] src, Predicate<Employee> predicate) {
 		Employee[] res = new Employee[src.length];
@@ -119,17 +101,17 @@ public class Company {
 		return Arrays.copyOf(res, index);
 	}
 	
-	private Employee[] getFilteredArray(Employee[] src, Comparator<Employee> comp, int from, int to) {
-		int fr = binarySearchFirst(src, comp, new Employee(0, 0, from, "", ""));
-		int t = binarySearchLast(src, comp, new Employee(0, 0, to, "", ""));
-		System.out.println(fr);
+	/*private Employee[] getFilteredArray(Employee[] src, Comparator<Employee> comp, int from, int to) {
+		int startPoint = binarySearchFirst(src, comp, new Employee(0, 0, from, "", ""));
+		int endPoint = binarySearchLast(src, comp, new Employee(0, 0, to, "", ""));
+		endPoint = getValidIndex(endPoint);
+		startPoint = getValidIndex(startPoint);
 		
-		
-		System.out.println(t);
-		
-		return Arrays.copyOfRange(src, 0, 4);
-		
-	}
+		System.out.println(startPoint);
+		System.out.println(endPoint);
+
+		return Arrays.copyOfRange(src, startPoint, endPoint + 1);
+	}*/
 	
 	private int getValidIndex(int index) {
 		return index < 0 ? Math.abs(index) - 1 : index;
@@ -145,51 +127,18 @@ public class Company {
 	}
 	
 	
-	
-	public static int binarySearchFirst(Employee[] array, Comparator<Employee> comp, Employee target) {
-		int left = 0;
-		int right = array.length - 1;
-		int middle = right / 2;
+	public int getFirst(Employee[] arr, Employee target, Comparator<Employee> comp) {
+		int index = Arrays.binarySearch(arr, target, comp);
 		
-		while(left < right) {
-			if (comp.compare(target, array[middle]) > 0) {
-				System.out.println(target);
-				System.out.println(array[middle]);
-				System.out.println(comp.compare(target, array[middle]));
-				right = middle - 1;
-			} else if (comp.compare(target, array[middle]) < 0) {
-				left = middle + 1;
-			} else {
-				right = middle;
-			}
-			middle = (left + right) / 2;
+		while (arr[index].getBirthYear() == target.getBirthYear()) {
+			index--;
 		}
-		if (comp.compare(target, array[middle]) != 0)
-			middle = comp.compare(target, array[middle]) > 0 ? -(middle + 2) : -(middle + 1);
+		return ++index;
 		
-		return middle;
 	}
 	
+
 	
-	public int binarySearchLast(Employee[] nums, Comparator<Employee> comp, Employee target) {
-		int left = 0;
-		int right = nums.length - 1;
-		int result = -1;
-
-		while (left <= right) {
-			int mid = left + (right - left) / 2;
-
-			if (nums[mid].compareTo(target) <= 0) {
-				left = mid + 1;
-				if (nums[mid].compareTo(target) == 0) {
-					result = mid;
-				}
-			} else {
-				right = mid - 1;
-			}
-		}
-		return result >= 0 ? result : left;
-    }
 	
 	
 	
