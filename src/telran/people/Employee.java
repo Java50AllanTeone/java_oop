@@ -18,6 +18,26 @@ public class Employee implements Comparable<Employee> {
 		this.department = department;
 	}
 	
+	public Employee(String name, String department) {
+		this(0, 0, 0, name, department);
+	}
+	
+	public Employee(String name) {
+		this(0, 0, 0, name, "");
+	}
+	
+	public Employee(int id, int salary, int birthYear) {
+		this(id, salary, birthYear, "", "");
+	}
+	
+	public Employee(int id, int salary) {
+		this(id, salary, 0, "", "");
+	}
+	
+	public Employee(int id) {
+		this(id, 0, 0, "", "");
+	}
+	
 	public int getId() {
 		return this.id;
 	}

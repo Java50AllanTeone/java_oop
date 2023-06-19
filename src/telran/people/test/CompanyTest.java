@@ -9,7 +9,7 @@ import org.junit.jupiter.api.Test;
 import telran.people.Company;
 import telran.people.Employee;
 
-class AddTest {
+class CompanyTest {
 
 	@Test
 	void test() {
