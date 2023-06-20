@@ -33,12 +33,6 @@ public class Company {
 	}
 	
 	
-	public int find() {
-		System.out.println(Arrays.toString(getFilteredArr(employeesSalary, new Employee(-1, 100500), new Employee(-1, 100500), cmpSlr)));
-		
-		return Arrays.binarySearch(employeesSalary, new Employee(500, 1000) , cmpSlr.thenComparing(cmpId));
-	}
-	
 	public Employee[] getAllEmployees() {
 		return Arrays.copyOf(employeesId, employeesId.length);
 	}
