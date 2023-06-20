@@ -12,10 +12,10 @@ public class Company {
 	public Employee[] employeesName;
 	public Employee[] employeesDepartment;
 	
-	Comparator<Employee> cmpAge = (e1, e2) -> e1.getBirthYear() - e2.getBirthYear();
-	Comparator<Employee> cmpSlr = (e1, e2) -> e1.getSalary() - e2.getSalary();
-	Comparator<Employee> cmpDep = (e1, e2) -> e1.getDepartment().compareTo(e2.getDepartment());
-	Comparator<Employee> cmpName = (e1, e2) -> e1.getName().compareTo(e2.getName());
+	Comparator<Employee> cmpAge = Comparator.comparingInt(Employee::getBirthYear);
+	Comparator<Employee> cmpSlr = Comparator.comparingInt(Employee::getSalary);
+	Comparator<Employee> cmpDep = Comparator.comparing(Employee::getDepartment);
+	Comparator<Employee> cmpName = Comparator.comparing(Employee::getName);
 	Comparator<Employee> cmpId = Comparator.naturalOrder();
 
 	public Company(Employee[] employees) {
@@ -32,20 +32,16 @@ public class Company {
 		Arrays.sort(employeesDepartment, cmpDep.thenComparing(cmpId));
 	}
 	
-	
 	public Employee[] getAllEmployees() {
 		return Arrays.copyOf(employeesId, employeesId.length);
 	}
 	
 	public Employee[] getEmployeesByAge(int ageFrom, int ageTo) {
 		int curYear = Year.now().getValue();
-		int yearFrom = curYear - ageTo;
-		int yearTo = curYear - ageFrom;
-		
-		Employee from = new Employee(0, 0, yearFrom);
-		Employee to = new Employee(0, 0, yearTo);
-		return getFilteredArr(employeesAge, from, to, cmpAge);	
-//		Comparator<Employee> comp = Comparator.comparing(Employee::getBirthYear);
+
+		Employee from = new Employee(0, 0, curYear - ageTo);
+		Employee to = new Employee(0, 0, curYear - ageFrom);
+		return getFilteredArr(employeesAge, from, to, cmpAge);
 	}
 	
 	public Employee[] getEmployeesBySalary(int salaryFrom, int salaryTo) {
@@ -118,6 +114,7 @@ public class Company {
 		employeesDepartment = removeFromArr(employeesDepartment, predicate);
 	
 		return prevSize > employeesId.length;
+		//TODO fix complexity after Daniel's answer
 	}
 	
 	

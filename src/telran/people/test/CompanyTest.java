@@ -36,7 +36,7 @@ class CompanyTest {
 		System.out.println(Arrays.toString(cmp.getEmployeesByName("Shira")));
 		
 		cmp.addEmployee(new Employee(9, 10000, 1991, "Ku", "QA"));
-		System.out.println(Arrays.toString(cmp.getEmployeesBySalary(10000, 10000)));
+		System.out.println(Arrays.toString(cmp.getEmployeesByDepartment("Prog")));
 //		System.out.println(cmp.find());
 		//cmp.find();
 		
