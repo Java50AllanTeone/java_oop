@@ -16,8 +16,7 @@ public class Company {
 	Comparator<Employee> cmpSlr = (e1, e2) -> e1.getSalary() - e2.getSalary();
 	Comparator<Employee> cmpDep = (e1, e2) -> e1.getDepartment().compareTo(e2.getDepartment());
 	Comparator<Employee> cmpName = (e1, e2) -> e1.getName().compareTo(e2.getName());
-	Comparator<Employee> cmpId = (e1, e2) -> e1.getId() - e2.getId();
-	
+	Comparator<Employee> cmpId = Comparator.naturalOrder();
 
 	public Company(Employee[] employees) {
 		this.employeesId = Arrays.copyOf(employees, employees.length);
@@ -27,10 +26,17 @@ public class Company {
 		this.employeesDepartment = Arrays.copyOf(employees, employees.length);
 		
 		Arrays.sort(employeesId, cmpId);
-		Arrays.sort(employeesSalary, cmpSlr);
-		Arrays.sort(employeesAge, cmpAge);
-		Arrays.sort(employeesName, cmpName);
-		Arrays.sort(employeesDepartment, cmpDep);
+		Arrays.sort(employeesSalary, cmpSlr.thenComparing(cmpId));
+		Arrays.sort(employeesAge, cmpAge.thenComparing(cmpId));
+		Arrays.sort(employeesName, cmpName.thenComparing(cmpId));
+		Arrays.sort(employeesDepartment, cmpDep.thenComparing(cmpId));
+	}
+	
+	
+	public int find() {
+		System.out.println(Arrays.toString(getFilteredArr(employeesSalary, new Employee(-1, 100500), new Employee(-1, 100500), cmpSlr)));
+		
+		return Arrays.binarySearch(employeesSalary, new Employee(500, 1000) , cmpSlr.thenComparing(cmpId));
 	}
 	
 	public Employee[] getAllEmployees() {
@@ -45,6 +51,7 @@ public class Company {
 		Employee from = new Employee(0, 0, yearFrom);
 		Employee to = new Employee(0, 0, yearTo);
 		return getFilteredArr(employeesAge, from, to, cmpAge);	
+//		Comparator<Employee> comp = Comparator.comparing(Employee::getBirthYear);
 	}
 	
 	public Employee[] getEmployeesBySalary(int salaryFrom, int salaryTo) {
@@ -82,10 +89,10 @@ public class Company {
 		boolean res = false;
 
 		var indId = Arrays.binarySearch(employeesId, empl, cmpId);
-		var indSalary = Arrays.binarySearch(employeesSalary, empl, cmpSlr);
-		var indAge = Arrays.binarySearch(employeesAge, empl, cmpAge);
-		var indName = Arrays.binarySearch(employeesName, empl, cmpName);
-		var indDepartment = Arrays.binarySearch(employeesDepartment, empl, cmpDep);
+		var indSalary = Arrays.binarySearch(employeesSalary, empl, cmpSlr.thenComparing(cmpId));
+		var indAge = Arrays.binarySearch(employeesAge, empl, cmpAge.thenComparing(cmpId));
+		var indName = Arrays.binarySearch(employeesName, empl, cmpName.thenComparing(cmpId));
+		var indDepartment = Arrays.binarySearch(employeesDepartment, empl, cmpDep.thenComparing(cmpId));
 		
 		if (indId < 0) {
 
@@ -143,41 +150,14 @@ public class Company {
 	}
 	
 	private Employee[] getFilteredArr(Employee[] src, Employee from, Employee to, Comparator<Employee> comp) {
-		int start = getValidIndex(getFirstOcc(src, from, comp));
-		int end = getLastOcc(src, to, comp);
+		int start = Arrays.binarySearch(src, from, comp.thenComparing(cmpId));
+		int end = Arrays.binarySearch(src, to, comp.thenComparing(Comparator.reverseOrder()));
 		
 		try {
-			return Arrays.copyOfRange(src, start, end + 1);
+			return Arrays.copyOfRange(src, getValidIndex(start), getValidIndex(end));
 		} catch (Exception e) {
 			return new Employee[] {};
 		}
-	}
-	
-	private int getFirstOcc(Employee[] arr, Employee target, Comparator<Employee> comp) {
-		int ind = arr.length;
-		
-		while (Arrays.binarySearch(arr, 0, ind, target, comp) >= 0) {
-			ind = Arrays.binarySearch(arr, 0, ind, target, comp);
-		}
-		return ind == arr.length ? Arrays.binarySearch(arr, 0, ind, target, comp) : ind;
-	}
-	
-	private int getLastOcc(Employee[] arr, Employee target, Comparator<Employee> comp) {
-	    int left = 0;
-	    int right = arr.length - 1;
-	    int result = -1;
-
-	    while (left <= right) {
-	        int mid = left + (right - left) / 2;
-	        
-	        if (comp.compare(arr[mid], target) <= 0) {
-	            result = mid;
-	            left = mid + 1;  // Continue searching on the right side for the last occurrence
-	        } else {
-	            right = mid - 1;
-	        }
-	    }
-	    return result;
 	}
 	
 	private int getValidIndex(int index) {

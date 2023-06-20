@@ -19,11 +19,11 @@ public class Employee implements Comparable<Employee> {
 	}
 	
 	public Employee(String name, String department) {
-		this(0, 0, 0, name, department);
+		this(-1, 0, 0, name, department);
 	}
 	
 	public Employee(String name) {
-		this(0, 0, 0, name, "");
+		this(-1, 0, 0, name, "");
 	}
 	
 	public Employee(int id, int salary, int birthYear) {
