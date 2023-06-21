@@ -68,7 +68,8 @@ public class Employee implements Comparable<Employee> {
 		if (getClass() != emplObj.getClass())
 			return false;
 		Employee other = (Employee) emplObj;
-		return id == other.id;
+		return id == other.id && salary == other.salary && birthYear == other.birthYear &&
+				name.equals(other.name) && department.equals(other.department);
 	}
 
 	@Override

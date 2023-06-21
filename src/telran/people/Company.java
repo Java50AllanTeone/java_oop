@@ -6,17 +6,18 @@ import java.util.Comparator;
 import java.util.function.Predicate;
 
 public class Company {	
+	//public for tests;
 	public Employee[] employeesId;
 	public Employee[] employeesSalary;
 	public Employee[] employeesAge;
 	public Employee[] employeesName;
 	public Employee[] employeesDepartment;
 	
-	Comparator<Employee> cmpAge = Comparator.comparingInt(Employee::getBirthYear);
-	Comparator<Employee> cmpSlr = Comparator.comparingInt(Employee::getSalary);
-	Comparator<Employee> cmpDep = Comparator.comparing(Employee::getDepartment);
-	Comparator<Employee> cmpName = Comparator.comparing(Employee::getName);
-	Comparator<Employee> cmpId = Comparator.naturalOrder();
+	private Comparator<Employee> cmpAge = Comparator.comparingInt(Employee::getBirthYear);
+	private Comparator<Employee> cmpSlr = Comparator.comparingInt(Employee::getSalary);
+	private Comparator<Employee> cmpDep = Comparator.comparing(Employee::getDepartment);
+	private Comparator<Employee> cmpName = Comparator.comparing(Employee::getName);
+	private Comparator<Employee> cmpId = Comparator.naturalOrder();
 
 	public Company(Employee[] employees) {
 		this.employeesId = Arrays.copyOf(employees, employees.length);
@@ -156,7 +157,7 @@ public class Company {
 				res[index++] = src[i];
 			}
 		}
-		return Arrays.copyOf(employeesAge, index);
+		return Arrays.copyOf(res, index);
 	}
 	
 	private Employee[] removeFromArr(Employee[] src, int i) {
