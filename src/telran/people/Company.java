@@ -135,9 +135,9 @@ public class Company {
 	private Employee[] addToArr(Employee[] arr, int ind, Employee empl) {
 		Employee[] res = new Employee[arr.length + 1];
 		System.arraycopy(arr, 0, res, 0, ind);
-		
 		System.arraycopy(arr, ind, res, ind + 1, arr.length - ind);
 		res[ind] = empl;
+		
 		return res;
 	}
 	
