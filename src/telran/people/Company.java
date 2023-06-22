@@ -85,18 +85,11 @@ public class Company {
 		var indDepartment = Arrays.binarySearch(employeesDepartment, empl, cmpDep.thenComparing(cmpId));
 		
 		if (indId < 0) {
-
-			indId = getValidIndex(indId);
-			indSalary = getValidIndex(indSalary);
-			indAge = getValidIndex(indAge);
-			indName = getValidIndex(indName);
-			indDepartment = getValidIndex(indDepartment);
-			
-			employeesId = addToArr(employeesId, indId, empl);
-			employeesSalary = addToArr(employeesSalary, indSalary, empl);
-			employeesAge = addToArr(employeesAge, indAge, empl);
-			employeesName = addToArr(employeesName, indName, empl);
-			employeesDepartment = addToArr(employeesDepartment, indDepartment, empl);
+			employeesId = addToArr(employeesId, getValidIndex(indId), empl);
+			employeesSalary = addToArr(employeesSalary, getValidIndex(indSalary), empl);
+			employeesAge = addToArr(employeesAge, getValidIndex(indAge), empl);
+			employeesName = addToArr(employeesName, getValidIndex(indName), empl);
+			employeesDepartment = addToArr(employeesDepartment, getValidIndex(indDepartment), empl);
 			
 			res = true;
 		}
