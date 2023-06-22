@@ -13,11 +13,11 @@ public class Company {
 	public Employee[] employeesName;
 	public Employee[] employeesDepartment;
 	
-	private Comparator<Employee> cmpAge = Comparator.comparingInt(Employee::getBirthYear);
-	private Comparator<Employee> cmpSlr = Comparator.comparingInt(Employee::getSalary);
-	private Comparator<Employee> cmpDep = Comparator.comparing(Employee::getDepartment);
-	private Comparator<Employee> cmpName = Comparator.comparing(Employee::getName);
 	private Comparator<Employee> cmpId = Comparator.naturalOrder();
+	private Comparator<Employee> cmpAge = Comparator.comparingInt(Employee::getBirthYear).thenComparing(cmpId);
+	private Comparator<Employee> cmpSlr = Comparator.comparingInt(Employee::getSalary).thenComparing(cmpId);
+	private Comparator<Employee> cmpDep = Comparator.comparing(Employee::getDepartment).thenComparing(cmpId);
+	private Comparator<Employee> cmpName = Comparator.comparing(Employee::getName).thenComparing(cmpId);
 
 	public Company(Employee[] employees) {
 		this.employeesId = Arrays.copyOf(employees, employees.length);
@@ -27,10 +27,10 @@ public class Company {
 		this.employeesDepartment = Arrays.copyOf(employees, employees.length);
 		
 		Arrays.sort(employeesId, cmpId);
-		Arrays.sort(employeesSalary, cmpSlr.thenComparing(cmpId));
-		Arrays.sort(employeesAge, cmpAge.thenComparing(cmpId));
-		Arrays.sort(employeesName, cmpName.thenComparing(cmpId));
-		Arrays.sort(employeesDepartment, cmpDep.thenComparing(cmpId));
+		Arrays.sort(employeesSalary, cmpSlr);
+		Arrays.sort(employeesAge, cmpAge);
+		Arrays.sort(employeesName, cmpName);
+		Arrays.sort(employeesDepartment, cmpDep);
 	}
 	
 	public Employee[] getAllEmployees() {
@@ -41,26 +41,25 @@ public class Company {
 		int curYear = Year.now().getValue();
 
 		Employee from = new Employee(-1, 0, curYear - ageTo);
-		Employee to = new Employee(-1, 0, curYear - ageFrom);
+		Employee to = new Employee(Integer.MAX_VALUE, 0, curYear - ageFrom);
 		return getFilteredArr(employeesAge, from, to, cmpAge);
 	}
 	
 	public Employee[] getEmployeesBySalary(int salaryFrom, int salaryTo) {
 		Employee from = new Employee(-1, salaryFrom);
-		Employee to = new Employee(-1, salaryTo);
-		
+		Employee to = new Employee(Integer.MAX_VALUE, salaryTo);
 		return getFilteredArr(employeesSalary, from, to, cmpSlr);
 	}
 	
 	public Employee[] getEmployeesByDepartment(String department) {
 		Employee from = new Employee("", department);
-		Employee to = new Employee("", department);
+		Employee to = new Employee(Integer.MAX_VALUE ,0, 0, "", department);
 		return getFilteredArr(employeesDepartment, from, to, cmpDep);
 	}
 	
 	public Employee[] getEmployeesByName(String name) {
 		Employee from = new Employee(name);
-		Employee to = new Employee(name);
+		Employee to = new Employee(Integer.MAX_VALUE, 0, 0, name, "");
 		return getFilteredArr(employeesName, from, to, cmpName);
 	}
 	
@@ -161,7 +160,7 @@ public class Company {
 	}
 	
 	private Employee[] getFilteredArr(Employee[] src, Employee from, Employee to, Comparator<Employee> comp) {
-		int start = Arrays.binarySearch(src, from, comp.thenComparing(cmpId));
+		int start = Arrays.binarySearch(src, from, comp);
 		int end = Arrays.binarySearch(src, to, comp.thenComparing(Comparator.reverseOrder()));
 		
 		try {
