@@ -1,5 +1,6 @@
 package telran.numbers;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
@@ -7,7 +8,7 @@ import java.util.function.Predicate;
 public class RangePredicate implements Iterable<Integer> {
 	int minInclusive;
 	int maxExclusive;
-	Predicate<Integer> predicate;
+	Predicate<Integer> predicate = e -> true;
 	
 	public Predicate<Integer> getPredicate() {
 		return predicate;
@@ -28,8 +29,15 @@ public class RangePredicate implements Iterable<Integer> {
 	}
 	
 	public int[] toArray() {
-		//TODO
-		return null;
+		int[] res = new int[maxExclusive - minInclusive];
+		int index = 0;
+		var it = this.iterator();
+		
+		while (it.hasNext()) {
+			res[index++] = it.next();
+		}
+		
+		return Arrays.copyOf(res, index);
 	}
 
 
@@ -37,26 +45,24 @@ public class RangePredicate implements Iterable<Integer> {
 
 	private class RangePredicateIterator implements Iterator<Integer> {
 		int current;
+		int next;
+		
 		Predicate<Integer> innerPredicate;
+	
 		
 		RangePredicateIterator(Predicate<Integer> predicate) {
-			this.innerPredicate = predicate;
-			try {
-				this.current = getNext(minInclusive);
-			} catch (Exception e) {
-				this.current = minInclusive;
-			}
-			
+			innerPredicate = predicate;	
+			current = getNext(minInclusive - 1);
 		}
 
 		@Override
 		public boolean hasNext() {
-			try {
-				getNext(this.current + 1);
+			next = getNext(current);
+			
+			if (next <= maxExclusive) {
 				return true;
-			} catch (NoSuchElementException e) {
-				return false;
-			}	
+			}
+			return false;	
 		}
 
 		@Override
@@ -64,20 +70,17 @@ public class RangePredicate implements Iterable<Integer> {
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
-			int res = current++;
+			int res = current;
+			current = next;
 			return res;
 		}
-		
-		
+			
 		private int getNext(int min) {
-			while (!this.innerPredicate.test(min)) {
-				if (min > maxExclusive) {
-					throw new NoSuchElementException();
-				}
+			do {
 				min++;
-			}
+			} while (!innerPredicate.test(min) && min < maxExclusive);
 			return min;
-		}
+		}	
 		
 	}
 

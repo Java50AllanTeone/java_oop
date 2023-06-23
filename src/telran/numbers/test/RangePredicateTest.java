@@ -4,6 +4,7 @@ import static org.junit.Assert.assertArrayEquals;
 import static org.junit.Assert.assertTrue;
 import static org.junit.jupiter.api.Assertions.assertThrowsExactly;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
@@ -23,11 +24,12 @@ public class RangePredicateTest {
 		range = new RangePredicate(1, 5);
 	}
 	
-//	@Test
-//	void fullRangeTest() {
-//		int[] expected = {1, 2, 3, 4};
-//		assertArrayEquals(expected, range.toArray());
-//	}
+	@Test
+	void fullRangeTest() {
+		int[] expected = {1, 2, 3, 4};
+		assertArrayEquals(expected, range.toArray());
+
+	}
 	
 	@Test
 	void iteratorTest() {
@@ -41,26 +43,27 @@ public class RangePredicateTest {
 		}
 		
 		while(itEven.hasNext()) {
-			assertTrue(itOdd.next() % 2 == 0);
+			assertTrue(itEven.next() % 2 == 0);
 		}
 		assertThrowsExactly(NoSuchElementException.class, () -> itOdd.next());
 		assertThrowsExactly(NoSuchElementException.class, () -> itEven.next());
 	}
 	
-//	@Test
-//	void oddToArrayTest() {
-//		int[] expected = {1, 3};
-//		range.setPredicate(predicateOdd);
-//		assertArrayEquals(expected, range.toArray());
-//	}
-//	
-//	@Test
-//	void evenToArrayTest() {
-//		int[] expected = {2, 4};
-//		range.setPredicate(predicateEven);
-//		assertArrayEquals(expected, range.toArray());
-//	}
-//	
+	@Test
+	void oddToArrayTest() {
+		int[] expected = {1, 3};
+		range.setPredicate(predicateOdd);
+		assertArrayEquals(expected, range.toArray());
+	}
+	
+	@Test
+	void evenToArrayTest() {
+		int[] expected = {2, 4};
+		range.setPredicate(predicateEven);
+		assertArrayEquals(expected, range.toArray());
+
+	}
+	
 	
 	
 }
