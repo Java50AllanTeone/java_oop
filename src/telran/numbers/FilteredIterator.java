@@ -40,6 +40,7 @@ public class FilteredIterator<T> implements Iterator<T> {
 				return next;
 			}
 		}
+		
 		return null;
 	}
 
