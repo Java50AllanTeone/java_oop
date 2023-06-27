@@ -36,7 +36,6 @@ public class RangePredicate implements Iterable<Integer> {
 		while (it.hasNext()) {
 			res[index++] = it.next();
 		}
-		
 		return Arrays.copyOf(res, index);
 	}
 
@@ -46,7 +45,6 @@ public class RangePredicate implements Iterable<Integer> {
 	private class RangePredicateIterator implements Iterator<Integer> {
 		int current;
 		int next;
-		
 		Predicate<Integer> innerPredicate;
 	
 		
