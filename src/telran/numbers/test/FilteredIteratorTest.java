@@ -17,8 +17,8 @@ import telran.numbers.RangeIterator;
 
 class FilteredIteratorTest {
 	List<Integer> range = Arrays.asList(1, 2, 3, 4, 5, 6, 7, 8, 9);
-	List<Integer> src;
 	List<Integer> act;
+	List<Integer> exp;
 
 	Iterator<Integer> srcIt;
 	Iterator<Integer> it;
@@ -26,8 +26,8 @@ class FilteredIteratorTest {
 	@BeforeEach
 	void init() {
 		srcIt = new RangeIterator(1, 10);
-		src = new ArrayList<>();
 		act = new ArrayList<>();
+		exp = new ArrayList<>();
 	}
 
 	// all values accepted from srcIterator are passed through filter
@@ -76,9 +76,9 @@ class FilteredIteratorTest {
 	private void test(Predicate<Integer> pred) {
 		Iterator<Integer> iter = new FilteredIterator<>(srcIt, pred);
 
-		iter.forEachRemaining(src::add);
-		act = range.stream().filter(pred).collect(Collectors.toList());
-		assertEquals(act, src);
+		iter.forEachRemaining(act::add);
+		exp = range.stream().filter(pred).collect(Collectors.toList());
+		assertEquals(exp, act);
 	}
 
 }
