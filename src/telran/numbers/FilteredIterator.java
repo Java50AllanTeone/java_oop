@@ -7,17 +7,25 @@ import java.util.function.Predicate;
 public class FilteredIterator<T> implements Iterator<T> {
 	private Iterator<T> it;
 	private Predicate<T> pred;
+	
 	private T current;
+	private boolean hasNext = true;
 	
 	public FilteredIterator(Iterator<T> iterator, Predicate<T> filter) {
 		this.it = iterator;
 		this.pred = filter;	
-		current = getNext();
+		
+		/*try {
+			current = getNext();
+		} catch (Exception e) {
+			hasNext = false;
+		}*/
+		setNext();
 	}
 
 	@Override
 	public boolean hasNext() {	
-		return current != null;
+		return hasNext;
 	}
 
 	@Override
@@ -26,22 +34,38 @@ public class FilteredIterator<T> implements Iterator<T> {
 			throw new NoSuchElementException();
 		}
 		T res = current;
-		current = getNext();
+		
+		/*try {
+			current = getNext();
+		} catch (Exception e) {
+			hasNext = false;
+		}*/
+		setNext();
 		return res;
 	}
 	
-	private T getNext() {
-		T next = null;
-		
+	/*private T getNext() {
 		while (it.hasNext()) {
-			next = it.next();
+			var next = it.next();
 			
 			if (pred.test(next)) {
 				return next;
 			}
 		}
-		
-		return null;
+		throw new NoSuchElementException();
+	}*/
+	
+	
+	private void setNext() {
+		while (it.hasNext()) {
+			var next = it.next();
+			
+			if (pred.test(next)) {
+				this.current = next;
+				return;
+			}
+		}
+		this.hasNext = false;
 	}
 
 }
