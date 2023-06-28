@@ -1,5 +1,6 @@
 package telran.numbers;
 
+import java.util.Arrays;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
 import java.util.function.Predicate;
@@ -10,11 +11,22 @@ public class Range implements Iterable<Integer> {
 	private int[] removedNumbers = new int[0];
 	
 	private class RangeIterator implements Iterator<Integer> {
-		int current = minInclusive;
+		int current = containsInRemoved(minInclusive) ? getCurrent(minInclusive) : minInclusive;
+		int previous = 0;
+		boolean flNext = false;
 
 		@Override
 		public boolean hasNext() {
 			return current < maxExclusive;
+		}
+
+		private int getCurrent(int current) {
+			current++;
+			
+			while (current < maxExclusive && containsInRemoved(current)) {
+				current++;
+			}
+			return current;
 		}
 
 		@Override
@@ -22,9 +34,21 @@ public class Range implements Iterable<Integer> {
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
-			int res = current++;
+			int res = current;
+			previous = current;
+			current = getCurrent(current);
+			flNext = true;
 			return res;
 		}	
+		
+		@Override
+		public void remove() {
+			if (!flNext) {
+				throw new IllegalStateException();
+			}
+			flNext = false;
+			addRemoved(previous);
+		}
 	}
 
 	
@@ -36,6 +60,25 @@ public class Range implements Iterable<Integer> {
 		this.maxExclusive = max;
 	}
 	
+	public void addRemoved(int num) {
+		removedNumbers = Arrays.copyOf(removedNumbers,  removedNumbers.length + 1);
+		removedNumbers[removedNumbers.length - 1] = num;
+	}
+
+	public boolean containsInRemoved(int num) {
+		boolean res = false;
+		int index = 0;
+		
+		while (index < removedNumbers.length && !res) {
+			if (removedNumbers[index] == num) {
+				res = true;
+			} else {
+				index++;
+			}
+		}
+		return res;
+	}
+
 	public int length() {
 		return maxExclusive - minInclusive - removedNumbers.length;
 	}

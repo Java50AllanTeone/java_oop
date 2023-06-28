@@ -57,6 +57,26 @@ class RangeTest {
 		assertFalse(range.removeIf(evenPredicate));
 		assertArrayEquals(expected, range.toArray());
 	}
+	
+	@Test
+	void removeIfAll() {
+		int[] expected = {};
+		assertTrue(range.removeIf(num -> true));
+		assertEquals(0,  range.length());
+		assertArrayEquals(expected, range.toArray());
+	}
+	
+	@Test
+	void removeIteratorTest() {
+		int[] expected = {2, 3, 4};
+		Iterator<Integer> it = range.iterator();
+		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
+		it.next();
+		it.remove();
+		
+		assertArrayEquals(expected, range.toArray());
+		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
+	}
 
 
 }
