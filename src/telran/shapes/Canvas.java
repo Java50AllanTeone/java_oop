@@ -2,6 +2,7 @@ package telran.shapes;
 
 import java.util.Arrays;
 import java.util.Iterator;
+import java.util.NoSuchElementException;
 import java.util.function.Predicate;
 
 public class Canvas implements Shape, Iterable<Shape> {
@@ -9,35 +10,63 @@ public class Canvas implements Shape, Iterable<Shape> {
 	
 	
 	private class CanvasIterator implements Iterator<Shape> {
+		int current = 0;
+		int previous = 0;
+		boolean flNext = false;
 
 		@Override
 		public boolean hasNext() {
-			// TODO Auto-generated method stub
-			return false;
+			return current < shapes.length;
 		}
 
 		@Override
 		public Shape next() {
-			// TODO Auto-generated method stub
-			return null;
+			if (!hasNext()) {
+				throw new NoSuchElementException();
+			}
+			var res = shapes[current];
+			previous = current++;
+			flNext = true;
+			return res;
 		}
 		
 		@Override
 		public void remove() {
-			
+			if (!flNext) {
+				throw new IllegalStateException();
+			}
+			flNext = false;
+			removeFromArr(previous);
+		}
+		
+		private void removeFromArr(int index) {
+			Shape[] temp = new Shape[shapes.length - 1];
+			System.arraycopy(shapes, 0, temp, 0, index);
+			System.arraycopy(shapes, index + 1, temp, index, temp.length - index);
+			shapes = temp;
 		}
 	}
 
 	@Override
 	public int perimeter() {
-		// TODO Auto-generated method stub
-		return 0;
+		int res = 0;
+		Iterator<Shape> it = iterator();
+		
+		while (it.hasNext()) {
+			res += it.next().perimeter();
+		}
+		return res;
 	}
 
 	@Override
 	public int square() {
-		// TODO Auto-generated method stub
-		return 0;
+		int res = 0;
+		Iterator<Shape> it = iterator();
+		
+		while (it.hasNext()) {
+			res += it.next().square();
+		}
+		return res;
 	}
 
 	@Override
@@ -50,13 +79,31 @@ public class Canvas implements Shape, Iterable<Shape> {
 		shapes[shapes.length - 1] = shape;
 	}
 	
-	public boolean removeIf(Predicate predicate) {
-		return false;
+	public boolean removeIf(Predicate<Shape> predicate) {
+		int oldLength = length();
+		Iterator<Shape> it = iterator();
 		
+		while (it.hasNext()) {
+			Shape shape = it.next();
+			
+			if (predicate.test(shape)) {
+				it.remove();
+			}
+		}
+		return oldLength > length();
 	}
+	
 	
 	public boolean removeNestedCanvases() {
 		return removeIf(shape -> shape instanceof Canvas);
+	}
+	
+	public int length() {
+		return shapes.length;
+	}
+	
+	public Shape[] toArray() {
+		return shapes;
 	}
 
 }
