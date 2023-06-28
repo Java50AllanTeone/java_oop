@@ -7,11 +7,21 @@ import java.util.function.Predicate;
 
 public class Canvas implements Shape, Iterable<Shape> {
 	private Shape[] shapes = new Shape[0];
-	
-	
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		Canvas other = (Canvas) obj;
+		return Arrays.equals(shapes, other.shapes);
+	}
+
 	private class CanvasIterator implements Iterator<Shape> {
 		int current = 0;
-		int previous = 0;
 		boolean flNext = false;
 
 		@Override
@@ -25,7 +35,7 @@ public class Canvas implements Shape, Iterable<Shape> {
 				throw new NoSuchElementException();
 			}
 			var res = shapes[current];
-			previous = current++;
+			current++;
 			flNext = true;
 			return res;
 		}
@@ -36,7 +46,7 @@ public class Canvas implements Shape, Iterable<Shape> {
 				throw new IllegalStateException();
 			}
 			flNext = false;
-			removeFromArr(previous);
+			removeFromArr(--current);
 		}
 		
 		private void removeFromArr(int index) {
@@ -53,7 +63,8 @@ public class Canvas implements Shape, Iterable<Shape> {
 		Iterator<Shape> it = iterator();
 		
 		while (it.hasNext()) {
-			res += it.next().perimeter();
+			var e = it.next();
+			res += e.perimeter();
 		}
 		return res;
 	}
