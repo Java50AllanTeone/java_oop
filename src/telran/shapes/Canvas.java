@@ -63,8 +63,7 @@ public class Canvas implements Shape, Iterable<Shape> {
 		Iterator<Shape> it = iterator();
 		
 		while (it.hasNext()) {
-			var e = it.next();
-			res += e.perimeter();
+			res += it.next().perimeter();
 		}
 		return res;
 	}
