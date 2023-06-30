@@ -34,10 +34,8 @@ public class Canvas implements Shape, Iterable<Shape> {
 			if (!hasNext()) {
 				throw new NoSuchElementException();
 			}
-			var res = shapes[current];
-			current++;
 			flNext = true;
-			return res;
+			return shapes[current++];
 		}
 		
 		@Override
@@ -60,10 +58,9 @@ public class Canvas implements Shape, Iterable<Shape> {
 	@Override
 	public int perimeter() {
 		int res = 0;
-		Iterator<Shape> it = iterator();
 		
-		while (it.hasNext()) {
-			res += it.next().perimeter();
+		for (var e : shapes) {
+			res += e.perimeter();
 		}
 		return res;
 	}
@@ -71,10 +68,9 @@ public class Canvas implements Shape, Iterable<Shape> {
 	@Override
 	public int square() {
 		int res = 0;
-		Iterator<Shape> it = iterator();
 		
-		while (it.hasNext()) {
-			res += it.next().square();
+		for (var e : shapes) {
+			res += e.square();
 		}
 		return res;
 	}
