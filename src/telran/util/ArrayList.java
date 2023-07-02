@@ -287,21 +287,6 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		return new ArrayList<>(this);
 	}
 	
-//	public void removeRange(int from, int to) {
-//		T[] arr = Arrays.copyOf(array, size);
-//		clear();
-//		System.arraycopy(arr, 0, array, 0, from);
-//		System.arraycopy(arr, to, array, from, from);
-//		
-//		
-//		indexValidation(from, true);
-//		indexValidation(to, false);
-//		size -= to - from;
-//		System.out.println(size);
-//		System.arraycopy(array, to, array, from, size - to);
-//		
-//		clearRange(from, size);
-//	}
 	
 	public void replaceAll(UnaryOperator<T> op) {
 		for (int i = 0; i < size; i++) {
