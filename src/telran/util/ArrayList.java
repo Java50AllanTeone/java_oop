@@ -26,7 +26,7 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	}
 
 	public ArrayList(Collection<T> collection) {
-		this(collection.size(), DEFAULT_LOAD);
+		this();
 		addAll(collection);
 	}
 	
@@ -162,7 +162,7 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	public boolean addAll(int index, Collection<T> collection) {
 		int oldSize = size;
 		
-		indexValidation(index, false);
+		indexValidation(index, true);
 		
 		for (T e : collection) {
 			add(index++, e);
@@ -224,7 +224,7 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	@Override
 	public int indexOf(Object pattern) {
 		for (int i = 0; i < size; i++) {
-			if (pattern == null ? array[i] == null : array[i].equals(pattern)) {
+			if (pattern == null ? array[i] == null : pattern.equals(array[i])) {
 				return i;
 			}
 		}
@@ -236,11 +236,11 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		int lastLeft = -1;
 		
 		for (int i = 0; i < size / 2 + 1; i++) {
-			if (pattern == null ? array[size - i - 1] == null : array[size - i - 1].equals(pattern)) {
+			if (pattern == null ? array[size - i - 1] == null : pattern.equals(array[size - i - 1])) {
 				return size - i - 1;
 			}
 			
-			if (pattern == null ? array[i] == null : array[i].equals(pattern)) {
+			if (pattern == null ? array[i] == null : pattern.equals(array[i])) {
 				lastLeft = i;
 			}
 		}
@@ -287,14 +287,21 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		return new ArrayList<>(this);
 	}
 	
-	public void removeRange(int from, int to) {
-		indexValidation(from, false);
-		indexValidation(from, true);
-		size -= to - from;
-		System.arraycopy(array, to, array, from, size - to);
-		
-		clearRange(from, size);
-	}
+//	public void removeRange(int from, int to) {
+//		T[] arr = Arrays.copyOf(array, size);
+//		clear();
+//		System.arraycopy(arr, 0, array, 0, from);
+//		System.arraycopy(arr, to, array, from, from);
+//		
+//		
+//		indexValidation(from, true);
+//		indexValidation(to, false);
+//		size -= to - from;
+//		System.out.println(size);
+//		System.arraycopy(array, to, array, from, size - to);
+//		
+//		clearRange(from, size);
+//	}
 	
 	public void replaceAll(UnaryOperator<T> op) {
 		for (int i = 0; i < size; i++) {
@@ -339,10 +346,10 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 			return false;
 		if (getClass() != obj.getClass())
 			return false;
-		ArrayList other = (ArrayList) obj;
-		return Arrays.deepEquals(array, other.array)
-				&& Double.doubleToLongBits(loadFactor) == Double.doubleToLongBits(other.loadFactor)
-				&& size == other.size;
+		ArrayList<T> other = (ArrayList<T>) obj;
+		return Double.doubleToLongBits(loadFactor) == Double.doubleToLongBits(other.loadFactor)
+				&& size == other.size
+				&&  Arrays.deepEquals(Arrays.copyOf(array, size), Arrays.copyOf(other.array, size));
 	}
 	
 	
@@ -382,5 +389,9 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	//for test
 	public int getLength() {
 		return array.length;
+	}
+	
+	public void setLoadFactor(double load) {
+		this.loadFactor = load;
 	}
 }

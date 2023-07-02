@@ -10,7 +10,6 @@ public interface Collection<T> extends Iterable<T> {
 	boolean removeIf(Predicate<T> predicate);
 	int size();
 	boolean addAll(Collection<T> collection);
-	
 	boolean removeAll(Collection<T> collection);
 	boolean isEmpty();
 	void clear();

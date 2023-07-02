@@ -3,6 +3,7 @@ package telran.tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -190,6 +191,20 @@ class CollectionTest {
 		assertEquals(src.size(), src.getLength());
 		assertEquals(size, src.size());
 		assertArrayEquals(arr, src.toArray());
+	}
+	
+	@Test
+	void iteratorTest() {
+		var it = src.iterator();
+		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
+		it.next();
+		it.remove();
+		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
+		
+		while (it.hasNext())
+			it.next();
+		
+		assertThrowsExactly(NoSuchElementException.class, () -> it.next());
 	}
 	
 	
