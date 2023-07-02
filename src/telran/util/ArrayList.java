@@ -280,6 +280,7 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	@Override
 	public void clear() {
 		clearRange(0, size);
+		size = 0;
 	}
 	
 	public Object clone() {
@@ -313,15 +314,10 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	}
 
 	@Override
-	public boolean retainAll(Collection c) {
+	public boolean retainAll(Collection<T> c) {
 		int oldSize = size;
-		boolean wasRemoved = true;
-		
-		for (Object e : c) {
-			while (wasRemoved) {
-				wasRemoved = remove(e);
-			}
-		}
+			
+		removeIf(e -> !c.contains(e));
 		return oldSize > size;
 	}
 

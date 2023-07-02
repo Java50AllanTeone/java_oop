@@ -3,13 +3,11 @@ package telran.tests;
 import static org.junit.jupiter.api.Assertions.*;
 
 import java.util.Arrays;
-import java.util.function.Predicate;
 
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 
 import telran.util.ArrayList;
-import telran.util.Collection;
 
 class CollectionTest {
 	ArrayList<Integer> src;
@@ -19,18 +17,7 @@ class CollectionTest {
 	void init() {
 		src = new ArrayList<>(new Integer[]{1, 2, 3, 4, 5}, 6);
 	}
-	
-	
-	/*	
-	boolean addAll(Collection<T> collection);
-	
-	boolean removeAll(Collection<T> collection);
-	boolean isEmpty();
-	void clear();
-	boolean contains(Object o);
-	void ensureCapacity(int capacity);
-	boolean retainAll(Collection<T> c);
-	public void trimToSize();*/
+
 	
 	@Test
 	void addTest() {
@@ -100,7 +87,6 @@ class CollectionTest {
 	
 	@Test
 	void sizeTest() {
-		
 		assertEquals(5, src.size());
 		src.add(6);
 		assertEquals(6, src.size());
@@ -112,15 +98,106 @@ class CollectionTest {
 	
 	@Test
 	void addAllTest() {
+		src = new ArrayList<>(new Integer[]{1, 2, 3, 4, 5}, 10);
+		exp = new ArrayList<>(new Integer[]{1, 2, 3, 4, 5, 6, 7, 8, 9, 10}, 10);
+		var add = new ArrayList<>(new Integer[]{6, 7, 8, 9, 10}, 10);
+		assertTrue(src.addAll(add));
+		assertEquals(exp, src);
 		
-		assertEquals(5, src.size());
-		src.add(6);
-		assertEquals(6, src.size());
-		src.add(7);
-		assertEquals(7, src.size());
-		src.remove(0);
-		assertEquals(6, src.size());
+		add = new ArrayList<>(new Integer[0]);
+		assertFalse(src.addAll(add));
+		assertEquals(exp, src);
 	}
+	
+	
+	@Test
+	void removeAllTest() {
+		src = new ArrayList<>(new Integer[]{1, 2, 3, 4, 5}, 10);
+		exp = new ArrayList<>(new Integer[]{1, 2, 3, 4}, 10);
+		var remove = new ArrayList<>(new Integer[]{5}, 10);
+		assertTrue(src.removeAll(remove));
+		assertEquals(exp, src);
+		
+		remove = new ArrayList<>(new Integer[0]);
+		assertFalse(src.addAll(remove));
+		assertEquals(exp, src);
+	}
+	
+	@Test
+	void isEmptyTest() {
+		src = new ArrayList<>(new Integer[]{}, 0);
+		assertTrue(src.isEmpty());
+		src = new ArrayList<>(new Integer[]{}, 10);
+		assertTrue(src.isEmpty());
+		
+		src.add(1);
+		assertFalse(src.isEmpty());
+	}
+	
+	
+	@Test
+	void clearTest() {
+		assertFalse(src.isEmpty());
+		src.clear();
+		assertTrue(src.isEmpty());
+		assertEquals(0, src.size());
+		assertArrayEquals(new Object[0], src.toArray());
+	}
+	
+
+	@Test
+	void containsTest() {
+		assertTrue(src.contains(1));
+		assertFalse(src.contains(6));
+		
+		src.clear();
+		
+		assertFalse(src.contains(1));
+		assertFalse(src.contains(6));
+	}
+
+	
+	@Test
+	void ensureCapacityTest() {
+		assertEquals(6, src.getLength());
+		src.ensureCapacity(6);
+		assertEquals(6, src.getLength());
+		src.ensureCapacity(7);
+		assertEquals(7, src.getLength());
+		src.ensureCapacity(100);
+		assertEquals(100, src.getLength());
+	}
+	
+	@Test
+	void retainAllTest() {
+		var retain = new ArrayList<>(new Integer[]{1, 2, 3}, 6);
+		
+		assertTrue(src.retainAll(retain));
+		assertFalse(src.retainAll(retain));
+		assertEquals(retain, src);
+		assertEquals(retain.size(), src.size());
+		assertEquals(retain.getLength(), src.getLength());
+		assertArrayEquals(retain.toArray(), src.toArray());
+	}
+	
+	@Test
+	void trimToSizeTest() {
+		var arr = src.toArray();
+		var size = src.size();
+		
+		assertNotEquals(size, src.getLength());
+		src.trimToSize();
+		assertEquals(src.size(), src.getLength());
+		assertEquals(size, src.size());
+		assertArrayEquals(arr, src.toArray());
+	}
+	
+	
+	
+	
+	
+	
+	
 	
 
 }
