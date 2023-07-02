@@ -4,13 +4,14 @@ import java.util.Arrays;
 import java.util.Comparator;
 import java.util.Iterator;
 import java.util.NoSuchElementException;
+import java.util.Objects;
 import java.util.function.Predicate;
 import java.util.function.UnaryOperator;
 
 public class ArrayList<T> implements List<T>, Iterable<T> {
 	private static final int DEFAULT_CAPACITY = 16;
 	private static final double DEFAULT_LOAD = 1;
-	private T[] array;
+	 T[] array;
 	private int size = 0;
 	private double loadFactor;
 	
@@ -24,13 +25,22 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		this(DEFAULT_CAPACITY, DEFAULT_LOAD);
 	}
 
-	@SuppressWarnings("unchecked")
 	public ArrayList(Collection<T> collection) {
 		this(collection.size(), DEFAULT_LOAD);
 		addAll(collection);
 	}
-
 	
+	public ArrayList(T[] array) {
+		this(array.length, DEFAULT_LOAD);
+		addAll(array);
+	}
+	
+	public ArrayList(T[] array, int capacity) {
+		this(capacity, DEFAULT_LOAD);
+		addAll(array);
+	}
+
+
 	
 	@Override
 	public boolean add(T obj) {
@@ -60,10 +70,10 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		
 		try {
 			remove(index);
-			return true;
 		} catch (Exception e) {
 			return false;
 		}
+		return true;
 	}
 	
 	@Override
@@ -76,7 +86,6 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		array[size] = null;
 		return res;
 	}
-
 
 	@Override
 	public T[] toArray(T[] ar) {
@@ -92,6 +101,18 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		}
 		return res;
 	}
+	
+	
+	@Override
+	public Object[] toArray() {
+		Object[] res = new Object[size];
+		
+		for (int i = 0; i < size; i++) {
+			res[i] = array[i];
+		}
+		return res;
+	}
+	
 
 	@Override
 	public boolean removeIf(Predicate<T> predicate) {
@@ -121,18 +142,38 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	public boolean addAll(Collection<T> collection) {
 		int oldSize = size;
 		
-		//auto nullpointer validation
 		for (T e : collection) {
 			this.add(e);
 		}		
+		return oldSize < size;
+	}
+	
+	
+	public boolean addAll(T[] array) {
+		int oldSize = size;
+		
+		for (T e : array) {
+			this.add(e);
+		}		
+		return oldSize < size;
+	}
+	
+	@Override
+	public boolean addAll(int index, Collection<T> collection) {
+		int oldSize = size;
+		
+		indexValidation(index, false);
+		
+		for (T e : collection) {
+			add(index++, e);
+		}	
 		return oldSize < size;
 	}
 
 	@Override
 	public boolean removeAll(Collection<T> collection) {
 		int oldSize = size;
-		
-		// auto nullpointer validation
+
 		for (T e : collection) {
 			this.remove(e);
 		}
@@ -179,7 +220,6 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		indexValidation(index, false);
 		array[index] = object;
 	}
-
 
 	@Override
 	public int indexOf(Object pattern) {
@@ -237,72 +277,97 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		return lastLeft;
 	}
 	
-
 	@Override
 	public void clear() {
-		// TODO Auto-generated method stub
-		
+		clearRange(0, size);
 	}
 	
-	public T[] clone() {
-		//TODO
-		return null;
+	public Object clone() {
+		return new ArrayList<>(this);
 	}
 	
 	public void removeRange(int from, int to) {
-		//TODO
+		indexValidation(from, false);
+		indexValidation(from, true);
+		size -= to - from;
+		System.arraycopy(array, to, array, from, size - to);
+		
+		clearRange(from, size);
 	}
 	
 	public void replaceAll(UnaryOperator<T> op) {
-		//TODO
-	}
-	
-	@Override
-	public Object[] toArray() {
-		// TODO Auto-generated method stub
-		return null;
+		for (int i = 0; i < size; i++) {
+			array[i] = op.apply(array[i]);
+		}
 	}
 
 	@Override
 	public boolean contains(Object o) {
-		// TODO Auto-generated method stub
-		return false;
+		return indexOf(o) >= 0;
 	}
 
 	@Override
 	public void ensureCapacity(int capacity) {
-		// TODO Auto-generated method stub
-		
+		if (array.length < capacity)
+			reallocate(capacity);
 	}
 
 	@Override
 	public boolean retainAll(Collection c) {
-		// TODO Auto-generated method stub
-		return false;
+		int oldSize = size;
+		boolean wasRemoved = true;
+		
+		for (Object e : c) {
+			while (wasRemoved) {
+				wasRemoved = remove(e);
+			}
+		}
+		return oldSize > size;
 	}
 
 	@Override
 	public void trimToSize() {
-		// TODO Auto-generated method stub
-		
+		reallocate(size);
 	}
 
 	@Override
-	public boolean addAll(int index, Collection<T> collection) {
-		// TODO Auto-generated method stub
-		return false;
+	public void sort(Comparator<T> c) {
+		Arrays.sort(array, 0, size, c);
 	}
-
+	
 	@Override
-	public void sort(Comparator c) {
-		// TODO Auto-generated method stub
-		
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (getClass() != obj.getClass())
+			return false;
+		ArrayList other = (ArrayList) obj;
+		return Arrays.deepEquals(array, other.array)
+				&& Double.doubleToLongBits(loadFactor) == Double.doubleToLongBits(other.loadFactor)
+				&& size == other.size;
 	}
 	
 	
+	@Override
+	public String toString() {
+		return "ArrayList [array=" + Arrays.toString(array) + ", size=" + size + ", loadFactor=" + loadFactor + "]";
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+
 	private void reallocate(int capacity) {
 		array = Arrays.copyOf(array, capacity);
 	}
+	
+	
 	private void indexValidation(int index, boolean sizeInclusive) {
 		int bounder = sizeInclusive ? size : size - 1;
 		
@@ -310,9 +375,16 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 			throw new IndexOutOfBoundsException(index);
 		}
 	}
-
 	
-
-
-
+	private void clearRange(int from, int to) {	
+		for (int i = from; i < to; i++) {
+			array[i] = null;
+		}
+	}
+	
+	
+	//for test
+	public int getLength() {
+		return array.length;
+	}
 }

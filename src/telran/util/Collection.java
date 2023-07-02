@@ -16,6 +16,7 @@ public interface Collection<T> extends Iterable<T> {
 	void clear();
 	boolean contains(Object o);
 	void ensureCapacity(int capacity);
-	boolean retainAll(Collection c);
+	boolean retainAll(Collection<T> c);
 	public void trimToSize();
+	
 }

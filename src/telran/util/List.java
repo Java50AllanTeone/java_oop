@@ -15,6 +15,6 @@ public interface List<T> extends Collection<T> {
 	
 	int indexOf(Predicate<T> predicate);
 	int lastIndexOf(Predicate<T> predicate);
-	void sort(Comparator c);
+	void sort(Comparator<T> c);
 
 }
