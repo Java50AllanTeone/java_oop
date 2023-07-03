@@ -33,13 +33,12 @@ class CollectionTest {
 		assertEquals((size * 3) / 2 + 1, src.getLength());
 	}
 	
-	
-	@SuppressWarnings("removal")
+
 	@Test
 	void removeTest() {
 		exp = new ArrayList<>(new Integer[]{1, 2, 3, 4}, 6);
-		assertTrue(src.remove(new Integer(5)));
-		assertFalse(src.remove(new Integer(5)));
+		assertTrue(src.remove(Integer.valueOf(5)));
+		assertFalse(src.remove(Integer.valueOf(5)));
 		
 		assertEquals(exp, src);
 		assertEquals(exp.size(), src.size());
@@ -196,15 +195,15 @@ class CollectionTest {
 	@Test
 	void iteratorTest() {
 		var it = src.iterator();
-		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
+		assertThrowsExactly(IllegalStateException.class, it::remove);
 		it.next();
 		it.remove();
-		assertThrowsExactly(IllegalStateException.class, () -> it.remove());
+		assertThrowsExactly(IllegalStateException.class, it::remove);
 		
 		while (it.hasNext())
 			it.next();
 		
-		assertThrowsExactly(NoSuchElementException.class, () -> it.next());
+		assertThrowsExactly(NoSuchElementException.class, it::remove);
 	}
 	
 	
