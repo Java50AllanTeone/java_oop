@@ -11,10 +11,12 @@ import java.util.function.UnaryOperator;
 public class ArrayList<T> implements List<T>, Iterable<T> {
 	private static final int DEFAULT_CAPACITY = 16;
 	private static final double DEFAULT_LOAD = 1;
-	 T[] array;
+	T[] array;
 	private int size = 0;
 	private double loadFactor;
-	
+
+
+	//constructors
 	@SuppressWarnings("unchecked")
 	public ArrayList(int capacity, double loadFactor) {
 		this.array = (T[]) new Object[capacity];
@@ -41,7 +43,7 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	}
 
 
-	
+	//Collection methods
 	@Override
 	public boolean add(T obj) {
 		if (size >= array.length * loadFactor) {
@@ -49,6 +51,174 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		}
 		array[size++] = obj;
 		return true;
+	}
+
+	@Override
+	public boolean addAll(Collection<T> collection) {
+		int oldSize = size;
+
+		for (T e : collection) {
+			this.add(e);
+		}
+		return oldSize < size;
+	}
+
+	@Override
+	public boolean remove(Object pattern) {
+		var index = indexOf(pattern);
+
+		try {
+			remove(index);
+		} catch (Exception e) {
+			return false;
+		}
+		return true;
+	}
+
+	@Override
+	public boolean removeIf(Predicate<T> predicate) {
+		int oldSize = size;
+		var it = iterator();
+
+		while (it.hasNext()) {
+			T next = it.next();
+			if (predicate.test(next)) {
+				it.remove();
+			}
+		}
+		return oldSize > size;
+	}
+
+	@Override
+	public boolean removeAll(Collection<T> collection) {
+		int oldSize = size;
+
+		for (T e : collection) {
+			this.remove(e);
+		}
+		return oldSize > size;
+	}
+
+	@Override
+	public boolean retainAll(Collection<T> c) {
+		int oldSize = size;
+
+		removeIf(e -> !c.contains(e));
+		return oldSize > size;
+	}
+
+	@Override
+	public boolean isEmpty() {
+		return size == 0;
+	}
+
+	@Override
+	public boolean contains(Object o) {
+		return indexOf(o) >= 0;
+	}
+
+	@Override
+	public void clear() {
+		clearRange(0, size);
+		size = 0;
+	}
+
+	@Override
+	public void ensureCapacity(int capacity) {
+		if (array.length < capacity)
+			reallocate(capacity);
+	}
+
+	@Override
+	public void trimToSize() {
+		reallocate(size);
+	}
+
+	@Override
+	public int size() {
+		return size;
+	}
+
+	@Override
+	public T[] toArray(T[] ar) {
+		T[] res = ar.length < size ? Arrays.copyOf(ar, size) : ar;
+		int index = 0;
+
+		for (T obj : this) {
+			res[index++] = obj;
+		}
+
+		if (res.length > size) {
+			res[size] = null;
+		}
+		return res;
+	}
+
+	@Override
+	public Object[] toArray() {
+		Object[] res = new Object[size];
+
+		for (int i = 0; i < size; i++) {
+			res[i] = array[i];
+		}
+		return res;
+	}
+
+
+	//List Methods
+	@Override
+	public int indexOf(Object pattern) {
+		for (int i = 0; i < size; i++) {
+			if (Objects.equals(pattern, array[i])) {
+				return i;
+			}
+		}
+		return -1;
+	}
+
+	@Override
+	public int lastIndexOf(T pattern) {
+		int lastLeft = -1;
+
+		for (int i = 0; i < size / 2 + 1; i++) {
+			if (Objects.equals(pattern, array[size - i - 1])) {
+				return size - i - 1;
+			}
+			if (Objects.equals(pattern, array[i])) {
+				lastLeft = i;
+			}
+		}
+		return lastLeft;
+	}
+
+	@Override
+	public int indexOf(Predicate<T> predicate) {
+		for (int i = 0; i < size; i++) {
+			try {
+				if (predicate.test(array[i])) {
+					return i;
+				}
+			} catch (NullPointerException e) {}
+		}
+		return -1;
+	}
+
+	@Override
+	public int lastIndexOf(Predicate<T> predicate) {
+		int lastLeft = -1;
+
+		for (int i = 0; i < size / 2 + 1; i++) {
+			try {
+				if (predicate.test(array[size - i - 1])) {
+					return size - i - 1;
+				}
+
+				if (predicate.test(array[i])) {
+					lastLeft = i;
+				}
+			} catch (NullPointerException e) {}
+		}
+		return lastLeft;
 	}
 
 	@Override
@@ -65,15 +235,21 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	}
 
 	@Override
-	public boolean remove(Object pattern) {
-		var index = indexOf(pattern);
-		
-		try {
-			remove(index);
-		} catch (Exception e) {
-			return false;
-		}
-		return true;
+	public void set(int index, T object) {
+		indexValidation(index, false);
+		array[index] = object;
+	}
+
+	@Override
+	public void sort(Comparator<T> c) {
+		Arrays.sort(array, 0, size, c);
+	}
+
+	@Override
+	public T get(int index) {
+		indexValidation(index, false);
+
+		return array[index];
 	}
 	
 	@Override
@@ -88,108 +264,29 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	}
 
 	@Override
-	public T[] toArray(T[] ar) {
-		T[] res = ar.length < size ? Arrays.copyOf(ar, size) : ar;
-		int index = 0;
-		
-		for (T obj : this) {
-			res[index++] = obj;
-		}
-		
-		if (res.length > size) {
-			res[size] = null;
-		}
-		return res;
-	}
-	
-	
-	@Override
-	public Object[] toArray() {
-		Object[] res = new Object[size];
-		
-		for (int i = 0; i < size; i++) {
-			res[i] = array[i];
-		}
-		return res;
-	}
-	
-
-	@Override
-	public boolean removeIf(Predicate<T> predicate) {
-		int oldSize = size;
-		var it = iterator();
-		
-		while (it.hasNext()) {
-			T next = it.next();
-			if (predicate.test(next)) {
-				it.remove();
-			}
-		}
-		return oldSize > size;
-	}
-
-	@Override
-	public int size() {
-		return size;
-	}
-
-	@Override
-	public boolean isEmpty() {
-		return size == 0;
-	}
-	
-	@Override
-	public boolean addAll(Collection<T> collection) {
-		int oldSize = size;
-		
-		for (T e : collection) {
-			this.add(e);
-		}		
-		return oldSize < size;
-	}
-	
-	
-	public boolean addAll(T[] array) {
-		int oldSize = size;
-		
-		for (T e : array) {
-			this.add(e);
-		}		
-		return oldSize < size;
-	}
-	
-	@Override
 	public boolean addAll(int index, Collection<T> collection) {
 		int oldSize = size;
-		
+
 		indexValidation(index, true);
-		
+
 		for (T e : collection) {
 			add(index++, e);
-		}	
+		}
 		return oldSize < size;
 	}
 
-	@Override
-	public boolean removeAll(Collection<T> collection) {
-		int oldSize = size;
 
-		for (T e : collection) {
-			this.remove(e);
-		}
-		return oldSize > size;
-	}
-
+	//Iterable
 	@Override
-	public Iterator<T> iterator() {		
+	public Iterator<T> iterator() {
 		return new Iterator<T>() {
 			int current = 0;
 			boolean flNext = false;
-			
+
 			public boolean hasNext() {
 				return current < size;
 			}
-			
+
 			public T next() {
 				if (!hasNext()) {
 					throw new NoSuchElementException();
@@ -197,7 +294,7 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 				flNext = true;
 				return array[current++];
 			}
-			
+
 			public void remove() {
 				if (!flNext) {
 					throw new IllegalStateException();
@@ -208,121 +305,26 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		};
 	}
 
-	@Override
-	public T get(int index) {
-		indexValidation(index, false);
+	//ArrayList methods
+	public boolean addAll(T[] array) {
+		int oldSize = size;
 		
-		return array[index];
+		for (T e : array) {
+			this.add(e);
+		}		
+		return oldSize < size;
 	}
 
-	@Override
-	public void set(int index, T object) {
-		indexValidation(index, false);
-		array[index] = object;
-	}
-
-	@Override
-	public int indexOf(Object pattern) {
-		for (int i = 0; i < size; i++) {
-			if (pattern == null ? array[i] == null : pattern.equals(array[i])) {
-				return i;
-			}
-		}
-		return -1;
-	}
-
-	@Override
-	public int lastIndexOf(T pattern) {
-		int lastLeft = -1;
-		
-		for (int i = 0; i < size / 2 + 1; i++) {
-			if (pattern == null ? array[size - i - 1] == null : pattern.equals(array[size - i - 1])) {
-				return size - i - 1;
-			}
-			
-			if (pattern == null ? array[i] == null : pattern.equals(array[i])) {
-				lastLeft = i;
-			}
-		}
-		return lastLeft;
-	}
-
-	@Override
-	public int indexOf(Predicate<T> predicate) {		
-		for (int i = 0; i < size; i++) {
-			try {
-				if (predicate.test(array[i])) {
-					return i;
-				}
-			} catch (NullPointerException e) {}
-		}
-		return -1;
-	}
-
-	@Override
-	public int lastIndexOf(Predicate<T> predicate) {
-		int lastLeft = -1;
-		
-		for (int i = 0; i < size / 2 + 1; i++) {
-			try {
-				if (predicate.test(array[size - i - 1])) {
-					return size - i - 1;
-				}
-				
-				if (predicate.test(array[i])) {
-					lastLeft = i;
-				}				
-			} catch (NullPointerException e) {}
-		}
-		return lastLeft;
-	}
-	
-	@Override
-	public void clear() {
-		clearRange(0, size);
-		size = 0;
-	}
-	
-	public Object clone() {
-		return new ArrayList<>(this);
-	}
-	
-	
 	public void replaceAll(UnaryOperator<T> op) {
 		for (int i = 0; i < size; i++) {
 			array[i] = op.apply(array[i]);
 		}
 	}
 
-	@Override
-	public boolean contains(Object o) {
-		return indexOf(o) >= 0;
+	public Object clone() {
+		return new ArrayList<>(this);
 	}
 
-	@Override
-	public void ensureCapacity(int capacity) {
-		if (array.length < capacity)
-			reallocate(capacity);
-	}
-
-	@Override
-	public boolean retainAll(Collection<T> c) {
-		int oldSize = size;
-			
-		removeIf(e -> !c.contains(e));
-		return oldSize > size;
-	}
-
-	@Override
-	public void trimToSize() {
-		reallocate(size);
-	}
-
-	@Override
-	public void sort(Comparator<T> c) {
-		Arrays.sort(array, 0, size, c);
-	}
-	
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)
@@ -334,28 +336,23 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 		ArrayList<T> other = (ArrayList<T>) obj;
 		return Double.doubleToLongBits(loadFactor) == Double.doubleToLongBits(other.loadFactor)
 				&& size == other.size
+				//copyOf for test
 				&&  Arrays.deepEquals(Arrays.copyOf(array, size), Arrays.copyOf(other.array, size));
 	}
-	
-	
+
 	@Override
 	public String toString() {
-		return "ArrayList [array=" + Arrays.toString(array) + ", size=" + size + ", loadFactor=" + loadFactor + "]";
+		return "[" + Arrays.toString(array) + ", size=" + size + ", loadFactor=" + loadFactor + "]";
 	}
-	
-	
-	
-	
-	
-	
-	
+
+
 	
 
+	//inner methods
 	private void reallocate(int capacity) {
 		array = Arrays.copyOf(array, capacity);
 	}
-	
-	
+
 	private void indexValidation(int index, boolean sizeInclusive) {
 		int bounder = sizeInclusive ? size : size - 1;
 		
@@ -371,7 +368,7 @@ public class ArrayList<T> implements List<T>, Iterable<T> {
 	}
 	
 	
-	//for test
+	//util test only methods
 	public int getLength() {
 		return array.length;
 	}
