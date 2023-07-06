@@ -37,38 +37,46 @@ class FilteredIteratorTest {
 	}
 
 	// never values accepted from srcIterator are passed through filter
+	@Test
 	void testNoneFiltered() {
 		test(e -> false);
 	}
 
 	// first accepted value is passed, but last is not passed
+	@Test
 	void testFirstFiltered() {
 		test(e -> e == 1);
 	}
 
 	// first is not passed, but last is passed
+	@Test
 	void testLastFiltered() {
 		test(e -> e == 9);
 	}
 	
 	// the srcIterator has no values from the beginning
+	@Test
 	void testEmpty() {
 		srcIt = new RangeIterator(1, 1);
-		test(e -> true);
+		test(e -> false);
 	}
 
+	@Test
 	void testMore() {
 		test(e -> e > 5);
 	}
 
+	@Test
 	void testLess() {
 		test(e -> e < 5);
 	}
 
+	@Test
 	void testEven() {
 		test(e -> e % 2 == 0);
 	}
 
+	@Test
 	void testOdd() {
 		test(e -> e % 2 != 0);
 	}
