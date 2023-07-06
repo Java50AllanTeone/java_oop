@@ -28,8 +28,8 @@ class ArrayListTest {
 		src = new ArrayList<>(new ArrayList<>(new Integer[]{1, 2, 3, 4, 5}, 6));
 		exp = new ArrayList<>(new Integer[]{1, 2, 3, 4, 5}, 16);
 		assertEquals(exp, src);
-	}1
-	
+	}
+
 	@Test
 	void cloneTest() {
 		var copy = src.clone();
